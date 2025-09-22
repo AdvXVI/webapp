@@ -1,0 +1,7 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+
+#divtest {
+    background-color: aqua;
+    font-size: xx-large;
+}
