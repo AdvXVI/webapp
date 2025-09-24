@@ -1,7 +1,17 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
 
-#divtest {
+.divtest {
     background-color: aqua;
-    font-size: xx-large;
+    font-size:medium;
+    text-align: center;
+}
+
+.footer {
+
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
 }

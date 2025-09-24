@@ -3,91 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Shop - Bootstrap</title>
+  <title>JazStation</title>
 
   <!-- Bootstrap CSS (comment out to see plain HTML) -->
   <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
   <link href="./dist/styles.css" rel="stylesheet">
 </head>
+
 <body>
 
-    <div id="divtest">
-        <!-- HTML working with Live Server, I think css needs the WATCH to work -->
-        (TEST)
-        BUILD -> npm run build:css styles.css
-        WATCH -> npm run watch:css styles.css
-    </div>
+  <div class="container divtest">
+      <!-- HTML working with Live Server, I think css needs the WATCH to work -->
+      (TEST)
+      BUILD -> npm run build:css styles.css
+      WATCH -> npm run watch:css styles.css
+  </div>
     
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand" href="#">E-Shop</a>
+      <a class="navbar-brand nav-link" href="#home">JazStation</a>
       <button class="navbar-toggler" type="button">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">🛒 Cart</a></li>
+          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#products">Games</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="#cart">🛒 Cart</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <header class="text-center text-white py-5 bg-dark" style="background:url('../548567618_1309225164239797_8020533448239270546_n.jpg') center/cover no-repeat;">
-    <div class="container">
-      <h1 class="display-4">Welcome to E-Shop</h1>
-      <p class="lead">Discover premium products for your business and lifestyle</p>
-    </div>
-  </header>
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- HOME -->
+    <section id="home" class="page">
+      <header class="text-center text-white py-5 bg-dark"
+        style="background:url('./assets/header.png') center/cover no-repeat;">
+        <div class="container">
+          <h1 class="display-4 ">Welcome to JazStation</h1>
+          <p class="lead">Games, unlimited games, but no games.</p>
+        </div>
+      </header>
+    </section>
 
-  <!-- PRODUCTS -->
-  <section class="py-5">
-    <div class="container">
-      <h2 class="text-center mb-4">Featured Products</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card h-100">
-            <img src="../93b49ded-209b-4ad5-9d73-21b6d5e907d0.jpeg" class="card-img-top" alt="Product 1">
-            <div class="card-body">
-              <h5 class="card-title">Elegant Chair</h5>
-              <p class="card-text">$99.00</p>
-              <a href="#" class="btn btn-primary w-100">Add to Cart</a>
+    <!-- PRODUCTS -->
+    <section id="products" class="page" style="display:none;">
+      <div class="container py-5">
+        <h2 class="text-center mb-4">Featured Games</h2>
+        <div class="row g-4">
+
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="./assets/product1.png" class="card-img-top" alt="Product 1">
+              <div class="card-body">
+                <h5 class="card-title">Until You're Mine</h5>
+                <p class="card-text">₱200</p>
+                <a href="#" class="btn btn-primary w-100">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product="Until You're Mine" data-price="200" data-img="./assets/product1.png">Add to Cart</a>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card h-100">
-            <img src="../541522783_1734246943873579_631380845278481057_n.jpg" class="card-img-top" alt="Product 2">
-            <div class="card-body">
-              <h5 class="card-title">Smart Lamp</h5>
-              <p class="card-text">$49.00</p>
-              <a href="#" class="btn btn-primary w-100">Add to Cart</a>
+
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="./assets/product2.png" class="card-img-top" alt="Product 2">
+              <div class="card-body">
+                <h5 class="card-title">Eternum</h5>
+                <p class="card-text">₱250</p>
+                <a href="#" class="btn btn-primary w-100">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product="Eternum" data-price="250" data-img="./assets/product2.png">Add to Cart</a>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card h-100">
-            <img src="../545819064_1080072590638119_7045369628530316155_n.jpg" class="card-img-top" alt="Product 3">
-            <div class="card-body">
-              <h5 class="card-title">Modern Desk</h5>
-              <p class="card-text">$199.00</p>
-              <a href="#" class="btn btn-primary w-100">Add to Cart</a>
+
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="./assets/product3.png" class="card-img-top" alt="Product 3">
+              <div class="card-body">
+                <h5 class="card-title">Student Transfer</h5>
+                <p class="card-text">₱150</p>
+                <a href="#" class="btn btn-primary w-100">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product="Student Transfer" data-price="150" data-img="./assets/product3.png">Add to Cart</a>
+              </div>
             </div>
           </div>
+
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="./assets/product4.png" class="card-img-top" alt="Product 4">
+              <div class="card-body">
+                <h5 class="card-title">Call of JD</h5>
+                <p class="card-text">₱550</p>
+                <a href="#" class="btn btn-primary w-100">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product="Call of JD" data-price="550" data-img="./assets/product4.png">Add to Cart</a>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="page" style="display:none;">
+      <div class="container py-5">
+        <h2 class="text-center mb-4">About Us</h2>
+        <p class="text-center">We sell cool stuff ✨</p>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="page" style="display:none;">
+      <div class="container py-5">
+        <h2 class="text-center mb-4">Contact Us</h2>
+        <p class="text-center">Email: demo@eshop.com</p>
+      </div>
+    </section>
+
+    <!-- CART -->
+    <section id="cart" class="page" style="display:none;">
+      <div class="container py-5">
+        <h2 class="text-center mb-4">Your Cart</h2>
+        <div id="cart-items"></div>
+        <div id="cart-total" class="text-center mt-4"></div>
+      </div>
+    </section>
+  </main>
 
   <!-- FOOTER -->
-  <footer class="bg-dark text-white text-center py-3">
-    <p class="mb-0">© 2025 E-Shop | Designed for demo purposes</p>
+  <footer class="footer bg-dark text-white text-center py-3">
+    <p class="mb-0">© 2025 JazStation | Web Development Activity</p>
   </footer>
 
+  <script src="./script.js"></script>
 </body>
 </html>
