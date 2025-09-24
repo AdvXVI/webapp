@@ -49,58 +49,99 @@
           <p class="lead">Games, unlimited games, but no games.</p>
         </div>
       </header>
+      <!-- Featured Games Section -->
+      <section class="container py-5">
+        <h2 class="text-center mb-4">Featured Games</h2>
+        <div id="featured-games" class="row g-4 justify-content-center"></div>
+      </section>
     </section>
 
     <!-- PRODUCTS -->
     <section id="products" class="page" style="display:none;">
       <div class="container py-5">
-        <h2 class="text-center mb-4">Featured Games</h2>
+        <h2 class="text-center mb-4">All Games</h2>
         <div class="row g-4">
 
           <div class="col-md-4">
             <div class="card h-100">
-              <img src="./assets/product1.png" class="card-img-top" alt="Product 1">
+                <div class="ratio ratio-1x1">
+                  <img src="./assets/header.png" class="card-img-top object-fit-cover rounded" alt="Product 1">
+                </div>
               <div class="card-body">
                 <h5 class="card-title">Until You're Mine</h5>
                 <p class="card-text">₱200</p>
-                <a href="#" class="btn btn-primary w-100">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product="Until You're Mine" data-price="200" data-img="./assets/product1.png">Add to Cart</a>
+                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="until-youre-mine">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="until-youre-mine">Add to Cart</a>
               </div>
             </div>
           </div>
 
           <div class="col-md-4">
             <div class="card h-100">
-              <img src="./assets/product2.png" class="card-img-top" alt="Product 2">
+                <div class="ratio ratio-1x1">
+                  <img src="./assets/header.png" class="rounded object-fit-cover card-img-top" alt="Product 2">
+                </div>
               <div class="card-body">
                 <h5 class="card-title">Eternum</h5>
                 <p class="card-text">₱250</p>
-                <a href="#" class="btn btn-primary w-100">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product="Eternum" data-price="250" data-img="./assets/product2.png">Add to Cart</a>
+                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="eternum">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="eternum">Add to Cart</a>
               </div>
             </div>
           </div>
 
           <div class="col-md-4">
             <div class="card h-100">
-              <img src="./assets/product3.png" class="card-img-top" alt="Product 3">
+                <div class="ratio ratio-1x1">
+                  <img src="./assets/product2.png" class="rounded object-fit-cover card-img-top" alt="Product 3">
+                </div>
               <div class="card-body">
                 <h5 class="card-title">Student Transfer</h5>
                 <p class="card-text">₱150</p>
-                <a href="#" class="btn btn-primary w-100">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product="Student Transfer" data-price="150" data-img="./assets/product3.png">Add to Cart</a>
+                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="student-transfer">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="student-transfer">Add to Cart</a>
               </div>
             </div>
           </div>
 
           <div class="col-md-4">
             <div class="card h-100">
-              <img src="./assets/product4.png" class="card-img-top" alt="Product 4">
+                <div class="ratio ratio-1x1">
+                  <img src="./assets/header.png" class="rounded object-fit-cover card-img-top" alt="Product 4">
+                </div>
               <div class="card-body">
                 <h5 class="card-title">Call of JD</h5>
                 <p class="card-text">₱550</p>
-                <a href="#" class="btn btn-primary w-100">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product="Call of JD" data-price="550" data-img="./assets/product4.png">Add to Cart</a>
+                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="call-of-jd">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="call-of-jd">Add to Cart</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card h-100">
+                <div class="ratio ratio-1x1">
+                  <img src="./assets/product1.png" class="rounded object-fit-cover card-img-top" alt="Product 4">
+                </div>
+              <div class="card-body">
+                <h5 class="card-title">Summertime Saga</h5>
+                <p class="card-text">₱550</p>
+                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="summertime-saga">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="summertime-saga">Add to Cart</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card h-100">
+                <div class="ratio ratio-1x1">
+                  <img src="./assets/product4.png" class="rounded object-fit-cover card-img-top" alt="Product 4">
+                </div>
+              <div class="card-body">
+                <h5 class="card-title">God of War</h5>
+                <p class="card-text">₱550</p>
+                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="god-of-war">Overview</a>
+                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="god-of-war">Add to Cart</a>
               </div>
             </div>
           </div>
@@ -131,6 +172,9 @@
         <h2 class="text-center mb-4">Your Cart</h2>
         <div id="cart-items"></div>
         <div id="cart-total" class="text-center mt-4"></div>
+        <div id="checkout-btn-row" class="text-center mt-4 d-none">
+          <button id="checkout-btn" class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#checkoutModal" disabled>Checkout</button>
+        </div>
       </div>
     </section>
   </main>
@@ -140,6 +184,111 @@
     <p class="mb-0">© 2025 JazStation | Web Development Activity</p>
   </footer>
 
+  <!-- Checkout Modal -->
+  <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="checkoutModalLabel">Checkout</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="checkout-summary"></div>
+          <form id="checkout-form" class="mt-4">
+            <div class="mb-3">
+              <label for="checkout-email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="checkout-email" required autocomplete="email" placeholder="you@email.com">
+              <div class="invalid-feedback">Please enter a valid email.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Payment Method</label>
+              <div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="payment-method" id="pay-card" value="card" required>
+                  <label class="form-check-label" for="pay-card">Card</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="payment-method" id="pay-paypal" value="paypal">
+                  <label class="form-check-label" for="pay-paypal">PayPal</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="payment-method" id="pay-gcash" value="gcash">
+                  <label class="form-check-label" for="pay-gcash">GCash</label>
+                </div>
+              </div>
+              <div class="invalid-feedback d-block" id="payment-method-feedback" style="display:none;">Please select a payment method.</div>
+            </div>
+            <div id="card-details" style="display:none;">
+              <div class="mb-3">
+                <label for="card-number" class="form-label">Card Number</label>
+                <input type="text" class="form-control" id="card-number" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" pattern="[\d ]{16,19}">
+                <div class="invalid-feedback">Enter a valid card number.</div>
+              </div>
+              <div class="mb-3 row">
+                <div class="col">
+                  <label for="card-expiry" class="form-label">Expiry (MM/YY)</label>
+                  <input type="text" class="form-control" id="card-expiry" maxlength="5" placeholder="MM/YY" pattern="\d{2}/\d{2}">
+                  <div class="invalid-feedback">Enter a valid expiry date.</div>
+                </div>
+                <div class="col">
+                  <label for="card-cvc" class="form-label">CVC</label>
+                  <input type="text" class="form-control" id="card-cvc" maxlength="4" placeholder="123" pattern="\d{3,4}">
+                  <div class="invalid-feedback">Enter a valid CVC.</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="card-name" class="form-label">Name on Card</label>
+                <input type="text" class="form-control" id="card-name" maxlength="40" placeholder="Cardholder Name">
+                <div class="invalid-feedback">Enter the cardholder's name.</div>
+              </div>
+            </div>
+          </form>
+          <div id="checkout-thankyou" class="text-center" style="display:none;">
+            <div class="alert alert-success">Thank you for your purchase! Your game's download link and transaction receipt will be sent to your email address.</div>
+            <button id="thankyou-confirm-btn" class="btn btn-primary mt-3" type="button" data-bs-dismiss="modal">Confirm</button>
+          </div>
+        </div>
+        <div class="modal-footer" id="checkout-modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="confirm-purchase-btn" type="button" class="btn btn-success" disabled>Confirm Purchase</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Overview Modal -->
+  <div class="modal fade" id="overviewModal" tabindex="-1" aria-labelledby="overviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="overviewModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Carousel -->
+          <div id="overviewCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-inner" id="overview-carousel-inner"></div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#overviewCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#overviewCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </button>
+          </div>
+          <div class="mb-2"><span class="badge bg-info" id="overview-genre"></span></div>
+          <div class="mb-3" id="overview-description"></div>
+          <div class="h5 mb-0 text-success" id="overview-price"></div>
+        </div>
+        <div class="modal-footer justify-content-end">
+          <button id="overview-add-to-cart" class="btn btn-success">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="./script.js"></script>
+  <script src="./bootstrap.bundle.min.js"></script>
 </body>
 </html>
