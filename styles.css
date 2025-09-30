@@ -1,9 +1,8 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
-
 .divtest {
     background-color: aqua;
-    font-size:medium;
+    font-size: medium;
     text-align: center;
 }
 
@@ -14,4 +13,39 @@
     bottom: 0;
     width: 100%;
     text-align: center;
+}
+
+.page {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+        opacity 1.5s cubic-bezier(.4,0,.2,1),
+        transform 1.5s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+}
+
+.page.active,
+.page.fadein {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Optionally, add a little margin between sections for scroll effect */
+#about, #products, #contact {
+    scroll-margin-top: 80px;
+}
+
+.section-fade {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+        opacity 1.5s cubic-bezier(.4,0,.2,1),
+        transform 1.5s cubic-bezier(.4,0,.2,1);
+    will-change: opacity, transform;
+}
+
+.section-fade.visible {
+    opacity: 1;
+    transform: translateY(0);
 }

@@ -12,27 +12,27 @@
 
 <body>
 
-  <div class="container divtest">
-      <!-- HTML working with Live Server, I think css needs the WATCH to work -->
+  <!-- <div class="container divtest">
+      HTML working with Live Server, I think css needs the WATCH to work
       (TEST)
       BUILD -> npm run build:css styles.css
       WATCH -> npm run watch:css styles.css
-  </div>
+  </div> -->
     
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand nav-link" href="#home">JazStation</a>
+      <a class="navbar-brand linktest" href="#home">JazStation</a>
       <button class="navbar-toggler" type="button">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#products">Games</a></li>
-          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" href="#cart">🛒 Cart</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="#products">Games</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="#cart">🛒 Cart</a></li>
         </ul>
       </div>
     </div>
@@ -57,112 +57,63 @@
     </section>
 
     <!-- PRODUCTS -->
-    <section id="products" class="page" style="display:none;">
+    <section id="products" class="section-fade">
       <div class="container py-5">
         <h2 class="text-center mb-4">All Games</h2>
-        <div class="row g-4">
-
-          <div class="col-md-4">
-            <div class="card h-100">
-                <div class="ratio ratio-1x1">
-                  <img src="./assets/header.png" class="card-img-top object-fit-cover rounded" alt="Product 1">
-                </div>
-              <div class="card-body">
-                <h5 class="card-title">Until You're Mine</h5>
-                <p class="card-text">₱200</p>
-                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="until-youre-mine">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="until-youre-mine">Add to Cart</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="card h-100">
-                <div class="ratio ratio-1x1">
-                  <img src="./assets/header.png" class="rounded object-fit-cover card-img-top" alt="Product 2">
-                </div>
-              <div class="card-body">
-                <h5 class="card-title">Eternum</h5>
-                <p class="card-text">₱250</p>
-                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="eternum">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="eternum">Add to Cart</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="card h-100">
-                <div class="ratio ratio-1x1">
-                  <img src="./assets/product2.png" class="rounded object-fit-cover card-img-top" alt="Product 3">
-                </div>
-              <div class="card-body">
-                <h5 class="card-title">Student Transfer</h5>
-                <p class="card-text">₱150</p>
-                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="student-transfer">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="student-transfer">Add to Cart</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="card h-100">
-                <div class="ratio ratio-1x1">
-                  <img src="./assets/header.png" class="rounded object-fit-cover card-img-top" alt="Product 4">
-                </div>
-              <div class="card-body">
-                <h5 class="card-title">Call of JD</h5>
-                <p class="card-text">₱550</p>
-                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="call-of-jd">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="call-of-jd">Add to Cart</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="card h-100">
-                <div class="ratio ratio-1x1">
-                  <img src="./assets/product1.png" class="rounded object-fit-cover card-img-top" alt="Product 4">
-                </div>
-              <div class="card-body">
-                <h5 class="card-title">Summertime Saga</h5>
-                <p class="card-text">₱550</p>
-                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="summertime-saga">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="summertime-saga">Add to Cart</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <div class="card h-100">
-                <div class="ratio ratio-1x1">
-                  <img src="./assets/product4.png" class="rounded object-fit-cover card-img-top" alt="Product 4">
-                </div>
-              <div class="card-body">
-                <h5 class="card-title">God of War</h5>
-                <p class="card-text">₱550</p>
-                <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="god-of-war">Overview</a>
-                <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="god-of-war">Add to Cart</a>
-              </div>
-            </div>
-          </div>
-
-        </div>
+        <div id="products-list" class="row g-4"></div>
       </div>
     </section>
 
     <!-- ABOUT -->
-    <section id="about" class="page" style="display:none;">
+    <section id="about" class="section-fade">
       <div class="container py-5">
-        <h2 class="text-center mb-4">About Us</h2>
-        <p class="text-center">We sell cool stuff ✨</p>
+        <div class="row align-items-center">
+          <div class="col-md-6 mb-4 mb-md-0">
+            <img src="./assets/header.png" class="img-fluid rounded shadow" alt="About JazStation">
+          </div>
+          <div class="col-md-6">
+            <h2 class="mb-3 fw-bold text-primary">About JazStation</h2>
+            <p class="lead text-secondary">
+              <strong>JazStation</strong> is your digital gateway to the world of games. We curate the latest and greatest in digital entertainment, from indie gems to blockbuster adventures, all in one seamless platform.
+            </p>
+            <ul class="list-group list-group-flush mb-3">
+              <li class="list-group-item bg-transparent"><i class="bi bi-controller me-2 text-success"></i>Instant digital delivery</li>
+              <li class="list-group-item bg-transparent"><i class="bi bi-people me-2 text-success"></i>Community-driven reviews</li>
+              <li class="list-group-item bg-transparent"><i class="bi bi-shield-check me-2 text-success"></i>Secure payments</li>
+              <li class="list-group-item bg-transparent"><i class="bi bi-lightning-charge me-2 text-success"></i>24/7 customer support</li>
+            </ul>
+            <p class="mb-0 text-muted">
+              Whether you're a casual player or a hardcore gamer, <span class="fw-semibold text-dark">JazStation</span> is here to power your next adventure.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- CONTACT -->
-    <section id="contact" class="page" style="display:none;">
+    <section id="contact" class="section-fade">
       <div class="container py-5">
         <h2 class="text-center mb-4">Contact Us</h2>
-        <p class="text-center">Email: demo@eshop.com</p>
+        <p class="text-center">You can also reach us via email: gameshq@jazstation.com</p>
+        <form id="contact-form" class="mx-auto" style="max-width:500px;">
+          <div class="mb-3">
+            <label for="contact-name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="contact-name" required>
+          </div>
+          <div class="mb-3">
+            <label for="contact-email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="contact-email" required>
+          </div>
+          <div class="mb-3">
+            <label for="contact-message" class="form-label">Message</label>
+            <textarea class="form-control" id="contact-message" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Send Message</button>
+          <div id="contact-success" class="alert alert-success mt-3 d-none" role="alert">
+            Message sent! Thank you for contacting us.
+          </div>
+          <p class="text-center"></p>
+        </form>
       </div>
     </section>
 

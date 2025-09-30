@@ -1,11 +1,71 @@
 document.addEventListener("DOMContentLoaded", () => {
   const pages = document.querySelectorAll(".page");
-  const navLinks = document.querySelectorAll(".nav-link");
+  const navLinks = document.querySelectorAll(".linktest");
 
   function showPage(id) {
-    pages.forEach(p => p.style.display = "none"); // hide all
-    const active = document.querySelector(id);
-    if (active) active.style.display = "block";   // show one
+    // Only Home and Cart are "pages"
+    const homeSection = document.getElementById("home");
+    const cartSection = document.getElementById("cart");
+    const aboutSection = document.getElementById("about");
+    const productsSection = document.getElementById("products");
+    const contactSection = document.getElementById("contact");
+
+    // Hide all .page sections
+    pages.forEach(p => {
+      p.classList.remove("active", "fadein");
+      p.style.display = "none";
+    });
+
+    // Always show About, Products, Contact (for scroll)
+    [aboutSection, productsSection, contactSection].forEach(sec => {
+      if (sec) sec.style.display = "";
+    });
+
+    if (id === "#cart") {
+      // Hide all except cart
+      if (homeSection) homeSection.style.display = "none";
+      if (aboutSection) aboutSection.style.display = "none";
+      if (productsSection) productsSection.style.display = "none";
+      if (contactSection) contactSection.style.display = "none";
+      if (cartSection) {
+        cartSection.style.display = "block";
+        void cartSection.offsetWidth;
+        cartSection.classList.add("active");
+        setTimeout(() => {
+          cartSection.classList.add("fadein");
+        }, 10);
+      }
+    } else {
+      // Show home, hide cart
+      if (cartSection) {
+        cartSection.classList.remove("active", "fadein");
+        cartSection.style.display = "none";
+      }
+      if (homeSection) {
+        homeSection.style.display = "block";
+        void homeSection.offsetWidth;
+        homeSection.classList.add("active");
+        setTimeout(() => {
+          homeSection.classList.add("fadein");
+        }, 10);
+      }
+      // Scroll to section if not home
+      if (id && id !== "#home") {
+        // Instantly fade in the section if not already visible
+        const target = document.querySelector(id);
+        if (target && target.classList.contains("section-fade")) {
+          fadeInSection(target);
+        }
+        setTimeout(() => {
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 100); // Wait for fade-in
+      } else {
+        // Scroll to top for Home
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
   }
 
   // handle clicks
@@ -18,8 +78,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // default on load (if URL has #, respect it)
-  if (window.location.hash) {
-    showPage(window.location.hash);
+  if (window.location.hash && window.location.hash !== "#cart") {
+    showPage("#home");
+    setTimeout(() => {
+      const target = document.querySelector(window.location.hash);
+      if (target) target.scrollIntoView({ behavior: "smooth" });
+    }, 200);
+  } else if (window.location.hash === "#cart") {
+    showPage("#cart");
   } else {
     showPage("#home");
   }
@@ -39,14 +105,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  renderCart();
+
   function renderCart() {
     const cartItemsDiv = document.getElementById("cart-items");
     const cartTotalDiv = document.getElementById("cart-total");
+    const btnRow = document.getElementById("checkout-btn-row");
     if (!cartItemsDiv) return;
 
     if (cart.length === 0) {
-      cartItemsDiv.innerHTML = `<p class="text-center">Cart is empty 😢</p>`;
+      cartItemsDiv.innerHTML = `<p class="text-center">Your cart is empty 😢</p>`;
       cartTotalDiv.innerHTML = "";
+      if (btnRow) btnRow.classList.add("d-none");
       return;
     }
 
@@ -103,84 +173,244 @@ document.addEventListener("DOMContentLoaded", () => {
         renderCart();
       });
     });
+
+    // Show checkout button row if cart has items
+    if (btnRow) btnRow.classList.remove("d-none");
     updateCheckoutButton();
   }
 
-  // Add to Cart handler (Products section)
-  document.querySelectorAll(".add-to-cart").forEach(btn => {
-    btn.addEventListener("click", e => {
-      e.preventDefault();
-      const productId = btn.getAttribute("data-product-id");
-      const data = productData[productId];
-      if (!data) return;
-      const existing = cart.find(item => item.name === data.name);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({ name: data.name, price: data.price, img: data.images[0], qty: 1 });
-      }
-      renderCart();
-      showPage("#cart");
-    });
-  });
-
-  // Show cart when navigating
-  document.querySelector('a[href="#cart"]').addEventListener("click", () => {
-    renderCart();
-  });
-
-  // Utility: Get all products from the Products section
-  function getAllProducts() {
-    const productCards = document.querySelectorAll('#products .card');
-    return Array.from(productCards).map(card => {
-      const name = card.querySelector('.card-title')?.textContent?.trim() || '';
-      const priceText = card.querySelector('.card-text')?.textContent?.replace(/[^\d]/g, '') || '0';
-      const price = parseInt(priceText, 10);
-      const img = card.querySelector('img')?.getAttribute('src') || '';
-      return { name, price, img };
-    });
-  }
-
-  // Utility: Pick n random items from array
-  function pickRandom(arr, n) {
-    const copy = arr.slice();
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
+  // --- Product Data ---
+  const productData = {
+    "until-youre-mine": {
+      name: "Until You're Mine",
+      price: 200,
+      genre: "Visual Novel",
+      description: "A gripping visual novel about choices and consequences.",
+      images: [
+        "./assets/product1.png",
+        "./assets/header.png"
+      ]
+    },
+    "eternum": {
+      name: "Eternum",
+      price: 250,
+      genre: "Adventure",
+      description: "Dive into a world of adventure and mystery in Eternum.",
+      images: [
+        "./assets/product2.png",
+        "./assets/header.png"
+      ]
+    },
+    "student-transfer": {
+      name: "Student Transfer",
+      price: 150,
+      genre: "Simulation",
+      description: "Experience life as a student in this unique simulation game.",
+      images: [
+        "./assets/product3.png",
+        "./assets/product2.png"
+      ]
+    },
+    "call-of-jd": {
+      name: "Call of JD",
+      price: 550,
+      genre: "Action",
+      description: "Fast-paced action and thrilling missions await in Call of JD.",
+      images: [
+        "./assets/product4.png",
+        "./assets/header.png"
+      ]
+    },
+    "summertime-saga": {
+      name: "Summertime Saga",
+      price: 550,
+      genre: "Dating Sim",
+      description: "A coming-of-age dating sim with a twist.",
+      images: [
+        "./assets/product1.png",
+        "./assets/product4.png"
+      ]
+    },
+    "god-of-war": {
+      name: "God of War",
+      price: 550,
+      genre: "Action",
+      description: "Epic battles and mythological adventures in God of War.",
+      images: [
+        "./assets/product4.png",
+        "./assets/header.png"
+      ]
+    },
+    "Songsilk": {
+      name: "Songsilk",
+      price: 200,
+      genre: "Metroidvania",
+      description: "The long awaited Knight Hollow Songsilk.",
+      images: [
+        "./assets/product1.png",
+        "./assets/header.png"
+      ]
+    },
+    "conter-strik": {
+      name: "Conter Strik",
+      price: 150,
+      genre: "FPS",
+      description: "Hello am 48 year man from somalia. Sorry for my bed england. I selled my wife for internet connection for play \"conter strik\" and i want to become the goodest player like you I play with 400 ping on brazil and i am global elite 2. pls no copy pasterio my story",
+      images: [
+        "./assets/product1.png",
+        "./assets/header.png"
+      ]
+    },
+    "ddlc": {
+      name: "Doki Doki Literature Club",
+      price: 200,
+      genre: "Visual Novel",
+      description: "You kind of left her hanging this morning, you know?",
+      images: [
+        "./assets/product1.png",
+        "./assets/header.png"
+      ]
     }
-    return copy.slice(0, n);
-  }
+  };
 
-  // Render Featured Games in Home section
-  function renderFeaturedGames() {
-    const featuredDiv = document.getElementById('featured-games');
-    if (!featuredDiv) return;
-    const products = getAllProducts();
-    if (products.length === 0) {
-      featuredDiv.innerHTML = '<p>No games available.</p>';
-      return;
-    }
-    const featured = pickRandom(products, Math.min(3, products.length));
-    featuredDiv.innerHTML = featured.map(game => `
+  // --- Overview Modal DOM references (define at top-level) ---
+  const overviewModal = document.getElementById("overviewModal");
+  const overviewModalLabel = document.getElementById("overviewModalLabel");
+  const overviewCarouselInner = document.getElementById("overview-carousel-inner");
+  const overviewGenre = document.getElementById("overview-genre");
+  const overviewDescription = document.getElementById("overview-description");
+  const overviewPrice = document.getElementById("overview-price");
+  const overviewAddToCart = document.getElementById("overview-add-to-cart");
+  let currentOverviewProductId = null;
+
+  // --- Render Products Section ---
+  function renderProductsSection() {
+    const productsList = document.getElementById('products-list');
+    if (!productsList) return;
+    productsList.innerHTML = Object.entries(productData).map(([id, data]) => `
       <div class="col-md-4">
         <div class="card h-100">
           <div class="ratio ratio-1x1">
-            <img src="${game.img}" class="card-img-top object-fit-cover rounded" alt="${game.name}">
+            <img src="${data.images[0]}" class="card-img-top object-fit-cover rounded" alt="${data.name}">
           </div>
           <div class="card-body">
-            <h5 class="card-title">${game.name}</h5>
-            <p class="card-text">₱${game.price}</p>
+            <h5 class="card-title">${data.name}</h5>
+            <p class="card-text">₱${data.price}</p>
+            <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="${id}">Overview</a>
+            <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="${id}">Add to Cart</a>
           </div>
         </div>
       </div>
     `).join('');
+    attachProductEventListeners();
+    attachOverviewModalListeners();
   }
 
-  // Render featured games on load and when navigating to Home
-  renderFeaturedGames();
-  document.querySelector('a[href="#home"]').addEventListener("click", () => {
-    renderFeaturedGames();
-  });
+  // --- Attach Product Event Listeners (for dynamic content) ---
+  function attachProductEventListeners() {
+    // Add to Cart handler (Products section)
+    document.querySelectorAll(".add-to-cart").forEach(btn => {
+      btn.onclick = null;
+      btn.addEventListener("click", e => {
+        e.preventDefault();
+        const productId = btn.getAttribute("data-product-id");
+        const data = productData[productId];
+        if (!data) return;
+        const existing = cart.find(item => item.name === data.name);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          cart.push({ name: data.name, price: data.price, img: data.images[0], qty: 1 });
+        }
+        renderCart();
+        showPage("#cart");
+      });
+    });
+  }
+
+  // --- Attach Overview Modal Event Listeners (for dynamic content) ---
+  function attachOverviewModalListeners() {
+    // Remove previous listeners to avoid duplicates
+    document.querySelectorAll(".overview-btn").forEach(btn => {
+      btn.onclick = null;
+      btn.addEventListener("click", e => {
+        e.preventDefault();
+        const productId = btn.getAttribute("data-product-id");
+        const data = productData[productId];
+        if (!data) return;
+
+        // Title
+        overviewModalLabel.textContent = data.name;
+
+        // Carousel (16:9 ratio for each image)
+        overviewCarouselInner.innerHTML = data.images.map((img, idx) =>
+          `<div class="carousel-item${idx === 0 ? " active" : ""}">
+            <div class="ratio ratio-16x9">
+              <img src="${img}" class="d-block w-100 rounded" alt="${data.name} image ${idx + 1}" style="object-fit:cover;">
+            </div>
+          </div>`
+        ).join("");
+
+        // Reset carousel to first slide
+        if (window.bootstrap && window.bootstrap.Carousel) {
+          try {
+            const carousel = bootstrap.Carousel.getOrCreateInstance(document.getElementById("overviewCarousel"));
+            carousel.to(0);
+          } catch {}
+        }
+
+        // Genre, Description, Price
+        overviewGenre.textContent = data.genre;
+        overviewDescription.textContent = data.description;
+        overviewPrice.textContent = `₱${data.price}`;
+
+        // Store current product id for add to cart
+        currentOverviewProductId = productId;
+
+        // Show modal
+        if (window.bootstrap && window.bootstrap.Modal) {
+          const modal = bootstrap.Modal.getOrCreateInstance(overviewModal);
+          modal.show();
+        }
+      });
+    });
+
+    // Add to Cart from Overview Modal
+    if (overviewAddToCart) {
+      overviewAddToCart.onclick = null;
+      overviewAddToCart.addEventListener("click", () => {
+        if (!currentOverviewProductId) return;
+        const data = productData[currentOverviewProductId];
+        if (!data) return;
+        // Use first image as cart image
+        const existing = cart.find(item => item.name === data.name);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          cart.push({ name: data.name, price: data.price, img: data.images[0], qty: 1 });
+        }
+        renderCart();
+        showPage("#cart");
+        // Optionally close the modal
+        if (window.bootstrap && window.bootstrap.Modal) {
+          const modal = bootstrap.Modal.getInstance(overviewModal);
+          if (modal) modal.hide();
+        }
+      });
+    }
+  }
+
+  // --- Override getAllProducts to use productData ---
+  function getAllProducts() {
+    return Object.entries(productData).map(([id, data]) => ({
+      name: data.name,
+      price: data.price,
+      img: data.images[0]
+    }));
+  }
+
+  // --- On DOMContentLoaded, render products section ---
+  renderProductsSection();
 
   // Checkout Modal logic
   const checkoutBtn = document.getElementById("checkout-btn");
@@ -413,136 +643,92 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Product Data for Overview Modal ---
-  const productData = {
-    "until-youre-mine": {
-      name: "Until You're Mine",
-      price: 200,
-      genre: "Visual Novel",
-      description: "A gripping visual novel about choices and consequences.",
-      images: [
-        "./assets/product1.png",
-        "./assets/header.png"
-      ]
-    },
-    "eternum": {
-      name: "Eternum",
-      price: 250,
-      genre: "Adventure",
-      description: "Dive into a world of adventure and mystery in Eternum.",
-      images: [
-        "./assets/product2.png",
-        "./assets/header.png"
-      ]
-    },
-    "student-transfer": {
-      name: "Student Transfer",
-      price: 150,
-      genre: "Simulation",
-      description: "Experience life as a student in this unique simulation game.",
-      images: [
-        "./assets/product3.png",
-        "./assets/product2.png"
-      ]
-    },
-    "call-of-jd": {
-      name: "Call of JD",
-      price: 550,
-      genre: "Action",
-      description: "Fast-paced action and thrilling missions await in Call of JD.",
-      images: [
-        "./assets/product4.png",
-        "./assets/header.png"
-      ]
-    },
-    "summertime-saga": {
-      name: "Summertime Saga",
-      price: 550,
-      genre: "Dating Sim",
-      description: "A coming-of-age dating sim with a twist.",
-      images: [
-        "./assets/product1.png",
-        "./assets/product4.png"
-      ]
-    },
-    "god-of-war": {
-      name: "God of War",
-      price: 550,
-      genre: "Action",
-      description: "Epic battles and mythological adventures in God of War.",
-      images: [
-        "./assets/product4.png",
-        "./assets/header.png"
-      ]
+  // Render Featured Games in Home section
+  function renderFeaturedGames() {
+    const featuredDiv = document.getElementById('featured-games');
+    if (!featuredDiv) return;
+    const products = getAllProducts();
+    if (products.length === 0) {
+      featuredDiv.innerHTML = '<p>No games available.</p>';
+      return;
     }
-  };
-
-  // --- Overview Modal Logic ---
-  const overviewModal = document.getElementById("overviewModal");
-  const overviewModalLabel = document.getElementById("overviewModalLabel");
-  const overviewCarouselInner = document.getElementById("overview-carousel-inner");
-  const overviewGenre = document.getElementById("overview-genre");
-  const overviewDescription = document.getElementById("overview-description");
-  const overviewPrice = document.getElementById("overview-price");
-  const overviewAddToCart = document.getElementById("overview-add-to-cart");
-  let currentOverviewProductId = null;
-
-  // Handle Overview button click
-  document.querySelectorAll(".overview-btn").forEach(btn => {
-    btn.addEventListener("click", e => {
-      e.preventDefault();
-      const productId = btn.getAttribute("data-product-id");
-      const data = productData[productId];
-      if (!data) return;
-
-      // Title
-      overviewModalLabel.textContent = data.name;
-
-      // Carousel (16:9 ratio for each image)
-      overviewCarouselInner.innerHTML = data.images.map((img, idx) =>
-        `<div class="carousel-item${idx === 0 ? " active" : ""}">
-          <div class="ratio ratio-16x9">
-            <img src="${img}" class="d-block w-100 rounded" alt="${data.name} image ${idx + 1}" style="object-fit:cover;">
+    const featured = pickRandom(products, Math.min(3, products.length));
+    featuredDiv.innerHTML = featured.map(game => `
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="ratio ratio-1x1">
+            <img src="${game.img}" class="card-img-top object-fit-cover rounded" alt="${game.name}">
           </div>
-        </div>`
-      ).join("");
+          <div class="card-body">
+            <h5 class="card-title">${game.name}</h5>
+            <p class="card-text">₱${game.price}</p>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
 
-      // Genre, Description, Price
-      overviewGenre.textContent = data.genre;
-      overviewDescription.textContent = data.description;
-      overviewPrice.textContent = `₱${data.price}`;
-
-      // Store current product id for add to cart
-      currentOverviewProductId = productId;
-
-      // Show modal
-      if (window.bootstrap && window.bootstrap.Modal) {
-        const modal = bootstrap.Modal.getOrCreateInstance(overviewModal);
-        modal.show();
-      }
-    });
+  // Render featured games on load and when navigating to Home
+  renderFeaturedGames();
+  document.querySelector('a[href="#home"]').addEventListener("click", () => {
+    renderFeaturedGames();
   });
 
-  // Add to Cart from Overview Modal
-  if (overviewAddToCart) {
-    overviewAddToCart.addEventListener("click", () => {
-      if (!currentOverviewProductId) return;
-      const data = productData[currentOverviewProductId];
-      if (!data) return;
-      // Use first image as cart image
-      const existing = cart.find(item => item.name === data.name);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({ name: data.name, price: data.price, img: data.images[0], qty: 1 });
-      }
-      renderCart();
-      showPage("#cart");
-      // Optionally close the modal
-      if (window.bootstrap && window.bootstrap.Modal) {
-        const modal = bootstrap.Modal.getInstance(overviewModal);
-        if (modal) modal.hide();
+  // --- Utility: Pick n random items from array ---
+  function pickRandom(arr, n) {
+    const copy = arr.slice();
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy.slice(0, n);
+  }
+
+  // Contact form handler
+  const contactForm = document.getElementById("contact-form");
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      // Optionally, validate fields here
+      contactForm.reset();
+      const success = document.getElementById("contact-success");
+      if (success) {
+        success.classList.remove("d-none");
+        setTimeout(() => {
+          success.classList.add("d-none");
+        }, 3000);
       }
     });
+  }
+
+  // Intersection Observer for section fade-in
+  const fadeSections = [
+    document.getElementById("about"),
+    document.getElementById("products"),
+    document.getElementById("contact")
+  ].filter(Boolean);
+
+  function fadeInSection(section) {
+    if (section && !section.classList.contains("visible")) {
+      section.classList.add("visible");
+    }
+  }
+
+  // Intersection Observer setup
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          fadeInSection(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    fadeSections.forEach(sec => {
+      observer.observe(sec);
+    });
+  } else {
+    // Fallback: show all if no IntersectionObserver
+    fadeSections.forEach(fadeInSection);
   }
 });
