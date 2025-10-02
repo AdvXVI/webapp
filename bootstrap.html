@@ -42,8 +42,7 @@
   <main>
     <!-- HOME -->
     <section id="home" class="page">
-      <header class="text-center text-white py-5 bg-dark"
-        style="background:url('./assets/header.png') center/cover no-repeat;">
+      <header class="text-center text-white py-5 bg-dark">
         <div class="container">
           <h1 class="display-4 ">Welcome to JazStation</h1>
           <p class="lead">Games, unlimited games, but no games.</p>
@@ -60,6 +59,17 @@
     <section id="products" class="section-fade">
       <div class="container py-5">
         <h2 class="text-center mb-4">All Games</h2>
+        <!-- Categories/Genres -->
+        <div id="product-categories" class="mb-4 text-center"></div>
+        <!-- Sort -->
+        <div class="d-flex justify-content-end mb-3">
+          <select id="product-sort" class="form-select form-select-sm" style="width:auto;">
+            <option value="az">A–Z</option>
+            <option value="za">Z–A</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+          </select>
+        </div>
         <div id="products-list" class="row g-4"></div>
       </div>
     </section>
@@ -73,18 +83,34 @@
           </div>
           <div class="col-md-6">
             <h2 class="mb-3 fw-bold text-primary">About JazStation</h2>
-            <p class="lead text-secondary">
+            <p class="lead text-secondary text-white-50">
               <strong>JazStation</strong> is your digital gateway to the world of games. We curate the latest and greatest in digital entertainment, from indie gems to blockbuster adventures, all in one seamless platform.
             </p>
-            <ul class="list-group list-group-flush mb-3">
-              <li class="list-group-item bg-transparent"><i class="bi bi-controller me-2 text-success"></i>Instant digital delivery</li>
-              <li class="list-group-item bg-transparent"><i class="bi bi-people me-2 text-success"></i>Community-driven reviews</li>
-              <li class="list-group-item bg-transparent"><i class="bi bi-shield-check me-2 text-success"></i>Secure payments</li>
-              <li class="list-group-item bg-transparent"><i class="bi bi-lightning-charge me-2 text-success"></i>24/7 customer support</li>
-            </ul>
-            <p class="mb-0 text-muted">
-              Whether you're a casual player or a hardcore gamer, <span class="fw-semibold text-dark">JazStation</span> is here to power your next adventure.
+            <p class="mb-0 text-white">
+              Whether you're a casual player or a hardcore gamer, <span class="fw-semibold text-light">JazStation</span> is here to power your next adventure.
             </p>
+          </div>
+        </div>
+        <!-- Creators Section -->
+        <div class="mt-5">
+          <h3 class="text-center fw-bold mb-4 text-primary">Meet the Creators</h3>
+          <div class="row justify-content-center g-4">
+            <div class="col-12 col-md-5 d-flex flex-column align-items-center">
+              <div class="bg-gradient rounded shadow p-3 w-100 text-center">
+                <img src="./assets/jd.jpg" alt="JD" class="rounded-circle shadow mb-3 creatorpage">
+                <h5 class="fw-bold mb-1">Jhondrei Apeta</h5>
+                <div class="text-light mb-2">Lead Designer &amp; Lead Conceptualist</div>
+                <p class="mb-0 small">Passionate about crafting beautiful, user-friendly digital experiences for gamers everywhere.</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-5 d-flex flex-column align-items-center">
+              <div class="bg-gradient rounded shadow p-3 w-100 text-center">
+                <img src="./assets/jaz.jpg" alt="Jaz" class="rounded-circle shadow mb-3 creatorpage">
+                <h5 class="fw-bold mb-1">Jazper Bonagua</h5>
+                <div class="text-light mb-2">Frontend Developer &amp; Game Curator</div>
+                <p class="mb-0 small">Ensuring smooth performance and curating the best games for the JazStation community.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -96,6 +122,9 @@
         <h2 class="text-center mb-4">Contact Us</h2>
         <p class="text-center">You can also reach us via email: gameshq@jazstation.com</p>
         <form id="contact-form" class="mx-auto" style="max-width:500px;">
+          <div id="contact-success" class="alert alert-success mt-3 d-none" role="alert">
+            Message sent! Thank you for contacting us.
+          </div>
           <div class="mb-3">
             <label for="contact-name" class="form-label">Name</label>
             <input type="text" class="form-control" id="contact-name" required>
@@ -109,9 +138,6 @@
             <textarea class="form-control" id="contact-message" rows="4" required></textarea>
           </div>
           <button type="submit" class="btn btn-primary w-100">Send Message</button>
-          <div id="contact-success" class="alert alert-success mt-3 d-none" role="alert">
-            Message sent! Thank you for contacting us.
-          </div>
           <p class="text-center"></p>
         </form>
       </div>
@@ -225,6 +251,8 @@
             <button class="carousel-control-next" type="button" data-bs-target="#overviewCarousel" data-bs-slide="next">
               <span class="carousel-control-next-icon"></span>
             </button>
+            <!-- Image previews below carousel -->
+            <div id="overview-carousel-previews" class="d-flex justify-content-center gap-2 mt-3"></div>
           </div>
           <div class="mb-2"><span class="badge bg-info" id="overview-genre"></span></div>
           <div class="mb-3" id="overview-description"></div>

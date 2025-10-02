@@ -183,72 +183,96 @@ document.addEventListener("DOMContentLoaded", () => {
   const productData = {
     "until-youre-mine": {
       name: "Until You're Mine",
-      price: 200,
+      price: 225,
       genre: "Visual Novel",
       description: "A gripping visual novel about choices and consequences.",
       images: [
-        "./assets/product1.png",
-        "./assets/header.png"
+        "./assets/uym.png",
+        "./assets/uym1.png",
+        "./assets/uym2.png",
+        "./assets/uym3.png",
+        "./assets/uym4.png",
+        "./assets/uym5.png"
       ]
     },
-    "eternum": {
-      name: "Eternum",
-      price: 250,
-      genre: "Adventure",
-      description: "Dive into a world of adventure and mystery in Eternum.",
+    "gta": {
+      name: "Grand Theft Auto",
+      price: 350,
+      genre: "Open-World",
+      description: "Grand Theft Auto V Enhanced, best game.",
       images: [
-        "./assets/product2.png",
-        "./assets/header.png"
+        "./assets/gta.webp",
+        "./assets/gta1.jpg",
+        "./assets/gta2.jpg",
+        "./assets/gta3.jpg",
+        "./assets/gta4.jpg",
+        "./assets/gta5.jpg",
       ]
     },
-    "student-transfer": {
-      name: "Student Transfer",
-      price: 150,
-      genre: "Simulation",
-      description: "Experience life as a student in this unique simulation game.",
+    "peak": {
+      name: "Peak",
+      price: 185,
+      genre: "Exploration",
+      description: "Reach the peak!!!",
       images: [
-        "./assets/product3.png",
-        "./assets/product2.png"
+        "./assets/peak.webp",
+        "./assets/peak1.png",
+        "./assets/peak2.png",
+        "./assets/peak3.png",
+        "./assets/peak4.png",
+        "./assets/peak5.png"
       ]
     },
     "call-of-jd": {
       name: "Call of JD",
-      price: 550,
+      price: 325,
       genre: "Action",
       description: "Fast-paced action and thrilling missions await in Call of JD.",
       images: [
-        "./assets/product4.png",
-        "./assets/header.png"
+        "./assets/jd.jpg",
+        "./assets/jd1.jpg",
+        "./assets/jd2.jpg",
+        "./assets/jd3.jpg",
+        "./assets/jd4.jpg"
       ]
     },
     "summertime-saga": {
       name: "Summertime Saga",
       price: 550,
-      genre: "Dating Sim",
+      genre: "Visual Novel",
       description: "A coming-of-age dating sim with a twist.",
       images: [
-        "./assets/product1.png",
-        "./assets/product4.png"
+        "./assets/sts.png",
+        "./assets/sts1.jpg",
+        "./assets/sts2.jpg",
+        "./assets/sts3.webp"
       ]
     },
     "god-of-war": {
       name: "God of War",
-      price: 550,
+      price: 565,
       genre: "Action",
       description: "Epic battles and mythological adventures in God of War.",
       images: [
-        "./assets/product4.png",
-        "./assets/header.png"
+        "./assets/gow.jpg",
+        "./assets/gow1.jpg",
+        "./assets/gow2.jpg",
+        "./assets/gow3.jpg",
+        "./assets/gow4.jpg",
+        "./assets/gow5.jpg",
       ]
     },
     "Songsilk": {
       name: "Songsilk",
-      price: 200,
+      price: 340,
       genre: "Metroidvania",
       description: "The long awaited Knight Hollow Songsilk.",
       images: [
-        "./assets/product1.png",
-        "./assets/header.png"
+        "./assets/silksong.jpg",
+        "./assets/silksong1.webp",
+        "./assets/silksong2.jpg",
+        "./assets/silksong3.jpg",
+        "./assets/silksong4.jpg"
       ]
     },
     "conter-strik": {
@@ -257,8 +281,10 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "FPS",
       description: "Hello am 48 year man from somalia. Sorry for my bed england. I selled my wife for internet connection for play \"conter strik\" and i want to become the goodest player like you I play with 400 ping on brazil and i am global elite 2. pls no copy pasterio my story",
       images: [
-        "./assets/product1.png",
-        "./assets/header.png"
+        "./assets/cs.jpg",
+        "./assets/cs1.jpg",
+        "./assets/cs2.jpg",
+        "./assets/cs3.jpg"
       ]
     },
     "ddlc": {
@@ -267,8 +293,12 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "Visual Novel",
       description: "You kind of left her hanging this morning, you know?",
       images: [
-        "./assets/product1.png",
-        "./assets/header.png"
+        "./assets/ddlc.png",
+        "./assets/ddlc1.jpg",
+        "./assets/ddlc2.jpg",
+        "./assets/ddlc3.jpg",
+        "./assets/ddlc4.jpg",
+        "./assets/ddlc5.jpg"
       ]
     }
   };
@@ -281,13 +311,78 @@ document.addEventListener("DOMContentLoaded", () => {
   const overviewDescription = document.getElementById("overview-description");
   const overviewPrice = document.getElementById("overview-price");
   const overviewAddToCart = document.getElementById("overview-add-to-cart");
+  const overviewCarouselPreviews = document.getElementById("overview-carousel-previews");
   let currentOverviewProductId = null;
 
-  // --- Render Products Section ---
-  function renderProductsSection() {
+  // --- Helper: Set active preview image ---
+  function setActivePreview(idx) {
+    if (!overviewCarouselPreviews) return;
+    overviewCarouselPreviews.querySelectorAll("img").forEach((img, i) => {
+      img.classList.toggle("active", i === idx);
+    });
+  }
+
+
+  let currentGenre = "all";
+  let currentSort = "az"; // default
+
+  // --- Render Categories (Genres) ---
+  function renderProductCategories() {
+    const categoriesDiv = document.getElementById('product-categories');
+    if (!categoriesDiv) return;
+    const genres = Array.from(new Set(Object.values(productData).map(p => p.genre))).sort();
+    categoriesDiv.innerHTML = `
+      <div class="d-inline-flex flex-wrap gap-2 justify-content-center">
+        <button class="btn btn-outline-primary btn-sm category-btn active" data-genre="all">All</button>
+        ${genres.map(genre =>
+          `<button class="btn btn-outline-primary btn-sm category-btn" data-genre="${genre}">${genre}</button>`
+        ).join('')}
+      </div>
+    `;
+    categoriesDiv.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        categoriesDiv.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentGenre = btn.getAttribute('data-genre');
+        renderProductsSection(currentGenre, currentSort);
+      });
+    });
+  }
+
+  // Add Sort dropdown listener
+  const sortSelect = document.getElementById("product-sort");
+  if (sortSelect) {
+    sortSelect.addEventListener("change", () => {
+      currentSort = sortSelect.value;
+      renderProductsSection(currentGenre, currentSort);
+    });
+  }
+
+  // --- Render Products Section (with optional genre filter) ---
+  function renderProductsSection(filterGenre = "all", sortBy = "az") {
     const productsList = document.getElementById('products-list');
     if (!productsList) return;
-    productsList.innerHTML = Object.entries(productData).map(([id, data]) => `
+
+    let entries = Object.entries(productData);
+
+    // filter by genre
+    if (filterGenre && filterGenre !== "all") {
+      entries = entries.filter(([id, data]) => data.genre === filterGenre);
+    }
+
+    // sort logic
+    entries.sort(([, a], [, b]) => {
+      switch (sortBy) {
+        case "az": return a.name.localeCompare(b.name);
+        case "za": return b.name.localeCompare(a.name);
+        case "price-asc": return a.price - b.price;
+        case "price-desc": return b.price - a.price;
+        default: return 0;
+      }
+    });
+
+    // render cards
+    productsList.innerHTML = entries.map(([id, data]) => `
       <div class="col-md-4">
         <div class="card h-100">
           <div class="ratio ratio-1x1">
@@ -302,9 +397,11 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
     `).join('');
+
     attachProductEventListeners();
     attachOverviewModalListeners();
   }
+
 
   // --- Attach Product Event Listeners (for dynamic content) ---
   function attachProductEventListeners() {
@@ -350,6 +447,39 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>`
         ).join("");
+
+        // Previews below carousel
+        if (overviewCarouselPreviews) {
+          overviewCarouselPreviews.innerHTML = data.images.map((img, idx) =>
+            `<img src="${img}" data-idx="${idx}" alt="Preview ${idx + 1}" class="${idx === 0 ? "active" : ""}">`
+          ).join("");
+        }
+
+        // Preview click: jump to carousel slide
+        if (overviewCarouselPreviews) {
+          overviewCarouselPreviews.querySelectorAll("img").forEach((img, idx) => {
+            img.onclick = () => {
+              const carousel = window.bootstrap && window.bootstrap.Carousel
+                ? bootstrap.Carousel.getOrCreateInstance(document.getElementById("overviewCarousel"))
+                : null;
+              if (carousel) carousel.to(idx);
+              setActivePreview(idx);
+            };
+          });
+        }
+
+        // --- Sync preview highlight on carousel slide ---
+        const carouselElem = document.getElementById("overviewCarousel");
+        if (carouselElem) {
+          // Remove previous event listeners to avoid stacking
+          carouselElem._previewSyncHandler && carouselElem.removeEventListener("slid.bs.carousel", carouselElem._previewSyncHandler);
+          carouselElem._previewSyncHandler = function () {
+            const items = Array.from(overviewCarouselInner.querySelectorAll(".carousel-item"));
+            const idx = items.findIndex(item => item.classList.contains("active"));
+            setActivePreview(idx);
+          };
+          carouselElem.addEventListener("slid.bs.carousel", carouselElem._previewSyncHandler);
+        }
 
         // Reset carousel to first slide
         if (window.bootstrap && window.bootstrap.Carousel) {
@@ -409,7 +539,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
 
-  // --- On DOMContentLoaded, render products section ---
+  // --- On DOMContentLoaded, render categories and products section ---
+  renderProductCategories();
   renderProductsSection();
 
   // Checkout Modal logic
