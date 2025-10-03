@@ -1,5 +1,19 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
+@font-face {
+  font-family: 'GYATT';
+  src: url('../assets/Iceberg-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal; 
+}
+
+@font-face {
+  font-family: 'SKIBIDI';
+  src: url('../assets/Quantico-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal; 
+}
+
 .divtest {
     background-color: aqua;
     font-size: medium;
@@ -17,12 +31,13 @@
 body {
   background-color: #121212;
   color: #e0e0e0;
-  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-family: 'SKIBIDI', 'Segoe UI', Roboto, sans-serif;
 }
 
 h1, h2, h3, h4, h5 {
   color: #ffffff;
   font-weight: 700;
+  font-family: 'SKIBIDI', 'Segoe UI', Roboto, sans-serif;
 }
 
 a {
@@ -32,6 +47,14 @@ a {
 
 a:hover {
   color: #072a5e;
+}
+
+.gyatt {
+  font-family: 'GYATT', 'Segoe UI', Roboto, sans-serif;
+}
+
+.skibidi {
+  font-family: 'SKIBIDI', 'Segoe UI', Roboto, sans-serif;
 }
 
 /* Navbar */
