@@ -736,12 +736,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add to Cart from Overview Modal
     if (overviewAddToCart) {
-      overviewAddToCart.onclick = null;
-      overviewAddToCart.addEventListener("click", () => {
+      overviewAddToCart.onclick = () => {
         if (!currentOverviewProductId) return;
         const data = productData[currentOverviewProductId];
         if (!data) return;
-        // Use first image as cart image
         const existing = cart.find(item => item.name === data.name);
         if (existing) {
           existing.qty += 1;
@@ -750,12 +748,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         renderCart();
         showPage("#cart");
-        // Optionally close the modal
+
         if (window.bootstrap && window.bootstrap.Modal) {
           const modal = bootstrap.Modal.getInstance(overviewModal);
           if (modal) modal.hide();
         }
-      });
+      };
     }
   }
 
