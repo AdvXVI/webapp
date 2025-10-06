@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const pages = document.querySelectorAll(".page");
-  const navLinks = document.querySelectorAll(".linktest");
-
     // --- Overview Modal DOM references ---
   const overviewModal = document.getElementById("overviewModal");
   const overviewModalLabel = document.getElementById("overviewModalLabel");
@@ -15,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentOverviewProductId = null;
 
   // Checkout Modal logic
+  const checkoutModalElem = document.getElementById('checkoutModal');
   const checkoutBtn = document.getElementById("checkout-btn");
   const checkoutSummary = document.getElementById("checkout-summary");
   const confirmPurchaseBtn = document.getElementById("confirm-purchase-btn");
@@ -22,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkoutForm = document.getElementById("checkout-form");
   const checkoutModalFooter = document.getElementById("checkout-modal-footer");
   const thankyouConfirmBtn = document.getElementById("thankyou-confirm-btn");
-  let checkoutModal = null;
 
     // --- Checkout Form Validation ---
   const emailInput = document.getElementById("checkout-email");
@@ -44,24 +41,58 @@ document.addEventListener("DOMContentLoaded", () => {
     cardName: false
   };
 
-  const cart = [];
+  const savedCart = localStorage.getItem("cart");
+  const cart = savedCart ? JSON.parse(savedCart) : [];
+
   let currentGenre = "all";
   let currentSort = "az"; // default
   const sortSelect = document.getElementById("product-sort");
   const contactForm = document.getElementById("contact-form");
   
+
+  /*
   // Render featured games on load and when navigating to Home
-  document.querySelector('a[href="#home"]').addEventListener("click", () => {
+  document.querySelector('a[href="/"]').addEventListener("click", () => {
     renderFeaturedGames();
   });
+  
+  hide cuz not needed rn
+  */
 
-  // Intersection Observer for section fade-in
-  const fadeSections = [
-    document.getElementById("about"),
-    document.getElementById("products"),
-    document.getElementById("contact")
-  ].filter(Boolean);
+  // fade in on load lulll
+  const fades = document.querySelectorAll(".page-fade");
+  requestAnimationFrame(() => {
+    fades.forEach(elem => elem.classList.add("fadein"));
+  });
 
+  // fade out weeeeee
+  //const navLinks = document.querySelectorAll("a[href]"); for all stuff even not nav
+  const navLinks = document.querySelectorAll("nav a[href]");
+  
+  navLinks.forEach(link => {
+    link.addEventListener("click", event => {
+      const targetUrl = link.getAttribute("href");
+
+      // Ignore links like "#" or same-page anchors
+      if (!targetUrl || targetUrl.startsWith("#")) return;
+
+      event.preventDefault(); // stop immediate navigation
+
+      const page = document.querySelector(".page-fade");
+      if (page) {
+        page.classList.remove("fadein");
+        page.classList.add("fadeout");
+
+        // After animation, navigate
+        setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 600); // match fadeout duration
+      } else {
+        // Fallback: just go immediately
+        window.location.href = targetUrl;
+      }
+    });
+  });
 
   // --- Product Data ---
   const productData = {
@@ -71,12 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "Visual Novel",
       description: "A gripping visual novel about choices and consequences.",
       images: [
-        "./assets/uym.png",
-        "./assets/uym1.png",
-        "./assets/uym2.png",
-        "./assets/uym3.png",
-        "./assets/uym4.png",
-        "./assets/uym5.png"
+        "/assets/uym.png",
+        "/assets/uym1.png",
+        "/assets/uym2.png",
+        "/assets/uym3.png",
+        "/assets/uym4.png",
+        "/assets/uym5.png"
       ]
     },
     "gta": {
@@ -85,12 +116,12 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "Open-World",
       description: "Grand Theft Auto V Enhanced, best game.",
       images: [
-        "./assets/gta.webp",
-        "./assets/gta1.jpg",
-        "./assets/gta2.jpg",
-        "./assets/gta3.jpg",
-        "./assets/gta4.jpg",
-        "./assets/gta5.jpg",
+        "/assets/gta.webp",
+        "/assets/gta1.jpg",
+        "/assets/gta2.jpg",
+        "/assets/gta3.jpg",
+        "/assets/gta4.jpg",
+        "/assets/gta5.jpg",
       ]
     },
     "peak": {
@@ -99,12 +130,12 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "Exploration",
       description: "Reach the peak!!!",
       images: [
-        "./assets/peak.webp",
-        "./assets/peak1.png",
-        "./assets/peak2.png",
-        "./assets/peak3.png",
-        "./assets/peak4.png",
-        "./assets/peak5.png"
+        "/assets/peak.webp",
+        "/assets/peak1.png",
+        "/assets/peak2.png",
+        "/assets/peak3.png",
+        "/assets/peak4.png",
+        "/assets/peak5.png"
       ]
     },
     "call-of-jd": {
@@ -113,11 +144,11 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "Action",
       description: "Fast-paced action and thrilling missions await in Call of JD.",
       images: [
-        "./assets/jd.jpg",
-        "./assets/jd1.jpg",
-        "./assets/jd2.jpg",
-        "./assets/jd3.jpg",
-        "./assets/jd4.jpg"
+        "/assets/jd.jpg",
+        "/assets/jd1.jpg",
+        "/assets/jd2.jpg",
+        "/assets/jd3.jpg",
+        "/assets/jd4.jpg"
       ]
     },
     "summertime-saga": {
@@ -126,10 +157,10 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "Visual Novel",
       description: "A coming-of-age dating sim with a twist.",
       images: [
-        "./assets/sts.png",
-        "./assets/sts1.jpg",
-        "./assets/sts2.jpg",
-        "./assets/sts3.webp"
+        "/assets/sts.png",
+        "/assets/sts1.jpg",
+        "/assets/sts2.jpg",
+        "/assets/sts3.webp"
       ]
     },
     "god-of-war": {
@@ -138,12 +169,12 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "Action",
       description: "Epic battles and mythological adventures in God of War.",
       images: [
-        "./assets/gow.jpg",
-        "./assets/gow1.jpg",
-        "./assets/gow2.jpg",
-        "./assets/gow3.jpg",
-        "./assets/gow4.jpg",
-        "./assets/gow5.jpg",
+        "/assets/gow.jpg",
+        "/assets/gow1.jpg",
+        "/assets/gow2.jpg",
+        "/assets/gow3.jpg",
+        "/assets/gow4.jpg",
+        "/assets/gow5.jpg",
       ]
     },
     "Songsilk": {
@@ -152,11 +183,11 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "Metroidvania",
       description: "The long awaited Knight Hollow Songsilk.",
       images: [
-        "./assets/silksong.jpg",
-        "./assets/silksong1.webp",
-        "./assets/silksong2.jpg",
-        "./assets/silksong3.jpg",
-        "./assets/silksong4.jpg"
+        "/assets/silksong.jpg",
+        "/assets/silksong1.webp",
+        "/assets/silksong2.jpg",
+        "/assets/silksong3.jpg",
+        "/assets/silksong4.jpg"
       ]
     },
     "conter-strik": {
@@ -165,10 +196,10 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "FPS",
       description: "Hello am 48 year man from somalia. Sorry for my bed england. I selled my wife for internet connection for play \"conter strik\" and i want to become the goodest player like you I play with 400 ping on brazil and i am global elite 2. pls no copy pasterio my story",
       images: [
-        "./assets/cs.jpg",
-        "./assets/cs1.jpg",
-        "./assets/cs2.jpg",
-        "./assets/cs3.jpg"
+        "/assets/cs.jpg",
+        "/assets/cs1.jpg",
+        "/assets/cs2.jpg",
+        "/assets/cs3.jpg"
       ]
     },
     "ddlc": {
@@ -177,41 +208,17 @@ document.addEventListener("DOMContentLoaded", () => {
       genre: "Visual Novel",
       description: "You kind of left her hanging this morning, you know?",
       images: [
-        "./assets/ddlc.png",
-        "./assets/ddlc1.jpg",
-        "./assets/ddlc2.jpg",
-        "./assets/ddlc3.jpg",
-        "./assets/ddlc4.jpg",
-        "./assets/ddlc5.jpg"
+        "/assets/ddlc.png",
+        "/assets/ddlc1.jpg",
+        "/assets/ddlc2.jpg",
+        "/assets/ddlc3.jpg",
+        "/assets/ddlc4.jpg",
+        "/assets/ddlc5.jpg"
       ]
     }
   };
 
-
-  // handle clicks
-  navLinks.forEach(link => {
-    link.addEventListener("click", e => {
-      e.preventDefault();
-      const target = link.getAttribute("href"); // e.g. #products
-      showPage(target);
-    });
-  });
-
-  // default on load (if URL has #, respect it)
-  if (window.location.hash && window.location.hash !== "#cart") {
-    showPage("#home");
-    setTimeout(() => {
-      const target = document.querySelector(window.location.hash);
-      if (target) target.scrollIntoView({ behavior: "smooth" });
-    }, 200);
-  } else if (window.location.hash === "#cart") {
-    showPage("#cart");
-  } else {
-    showPage("#home");
-  }
-
   // Add Sort dropdown listener
-  
   if (sortSelect) {
     sortSelect.addEventListener("change", () => {
       currentSort = sortSelect.value;
@@ -224,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
     emailInput.addEventListener("blur", () => { touched.email = true; validateForm(); });
     emailInput.addEventListener("input", () => { touched.email = true; validateForm(); });
   }
+
   if (paymentRadios.length) {
     paymentRadios.forEach(radio => {
       radio.addEventListener("change", () => {
@@ -237,18 +245,22 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
   if (cardNumber) {
     cardNumber.addEventListener("blur", () => { touched.cardNumber = true; validateForm(); });
     cardNumber.addEventListener("input", () => { touched.cardNumber = true; validateForm(); });
   }
+
   if (cardExpiry) {
     cardExpiry.addEventListener("blur", () => { touched.cardExpiry = true; validateForm(); });
     cardExpiry.addEventListener("input", () => { touched.cardExpiry = true; validateForm(); });
   }
+
   if (cardCvc) {
     cardCvc.addEventListener("blur", () => { touched.cardCvc = true; validateForm(); });
     cardCvc.addEventListener("input", () => { touched.cardCvc = true; validateForm(); });
   }
+
   if (cardName) {
     cardName.addEventListener("blur", () => { touched.cardName = true; validateForm(); });
     cardName.addEventListener("input", () => { touched.cardName = true; validateForm(); });
@@ -258,11 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (checkoutForm) {
     checkoutForm.addEventListener("input", validateForm);
     checkoutForm.addEventListener("change", validateForm);
-  }
-
-  // Bootstrap Modal instance 
-  if (window.bootstrap && window.bootstrap.Modal) {
-    checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
   }
 
   // Populate checkout summary when modal is shown
@@ -348,96 +355,42 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Intersection Observer setup
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          fadeInSection(entry.target);
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    fadeSections.forEach(sec => {
-      observer.observe(sec);
-    });
-  } else {
-    // Fallback: show all if no IntersectionObserver
-    fadeSections.forEach(fadeInSection);
-  }
-
   renderCart();
   renderProductCategories();
   renderProductsSection();
   renderFeaturedGames();
 
-  function showPage(id) {
-    // Only Home and Cart are "pages"
-    const homeSection = document.getElementById("home");
-    const cartSection = document.getElementById("cart");
-    const aboutSection = document.getElementById("about");
-    const productsSection = document.getElementById("products");
-    const contactSection = document.getElementById("contact");
 
-    // Hide all .page sections
-    pages.forEach(p => {
-      p.classList.remove("active", "fadein");
-      p.style.display = "none";
-    });
+  function goToPage(pageName) {
+    const routes = {
+      home: "/",
+      products: "/products",
+      about: "/about",
+      contact: "/contact",
+      cart: "/cart"
+    };
 
-    // Always show About, Products, Contact (for scroll)
-    [aboutSection, productsSection, contactSection].forEach(sec => {
-      if (sec) sec.style.display = "";
-    });
+    const target = routes[pageName.toLowerCase()];
+    if (!target) return;
 
-    if (id === "#cart") {
-      // Hide all except cart
-      if (homeSection) homeSection.style.display = "none";
-      if (aboutSection) aboutSection.style.display = "none";
-      if (productsSection) productsSection.style.display = "none";
-      if (contactSection) contactSection.style.display = "none";
-      if (cartSection) {
-        cartSection.style.display = "block";
-        void cartSection.offsetWidth;
-        cartSection.classList.add("active");
-        setTimeout(() => {
-          cartSection.classList.add("fadein");
-        }, 10);
-      }
+    const page = document.querySelector(".page-fade");
+    if (page) {
+      page.classList.remove("fadein");
+      page.classList.add("fadeout");
+
+      setTimeout(() => {
+        window.location.href = target;
+      }, 600);
     } else {
-      // Show home, hide cart
-      if (cartSection) {
-        cartSection.classList.remove("active", "fadein");
-        cartSection.style.display = "none";
-      }
-      if (homeSection) {
-        homeSection.style.display = "block";
-        void homeSection.offsetWidth;
-        homeSection.classList.add("active");
-        setTimeout(() => {
-          homeSection.classList.add("fadein");
-        }, 10);
-      }
-      // Scroll to section if not home
-      if (id && id !== "#home") {
-        // Instantly fade in the section if not already visible
-        const target = document.querySelector(id);
-        if (target && target.classList.contains("section-fade")) {
-          fadeInSection(target);
-        }
-        setTimeout(() => {
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth" });
-          }
-        }, 100); // Wait for fade-in
-      } else {
-        // Scroll to top for Home
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      window.location.href = target;
     }
   }
 
-    // Render Featured Games in Home section
+  function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+
+  // Render Featured Games in Home section
   function renderFeaturedGames() {
     const featuredDiv = document.getElementById('featured-games');
     if (!featuredDiv) return;
@@ -486,6 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderCart() {
+    saveCart();
     const cartItemsDiv = document.getElementById("cart-items");
     const cartTotalDiv = document.getElementById("cart-total");
     const btnRow = document.getElementById("checkout-btn-row");
@@ -621,8 +575,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="card-body">
             <h5 class="card-title">${data.name}</h5>
             <p class="card-text">₱${data.price}</p>
-            <a href="#" class="btn btn-primary w-100 overview-btn" data-product-id="${id}">Overview</a>
-            <a href="#" class="btn btn-secondary w-100 add-to-cart" data-product-id="${id}">Add to Cart</a>
+            <a href="/" class="btn btn-primary w-100 overview-btn" data-product-id="${id}">Overview</a>
+            <a href="/" class="btn btn-secondary w-100 add-to-cart" data-product-id="${id}">Add to Cart</a>
           </div>
         </div>
       </div>
@@ -649,7 +603,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cart.push({ name: data.name, price: data.price, img: data.images[0], qty: 1 });
         }
         renderCart();
-        showPage("#cart");
+        goToPage("cart");
       });
     });
   }
@@ -747,7 +701,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cart.push({ name: data.name, price: data.price, img: data.images[0], qty: 1 });
         }
         renderCart();
-        showPage("#cart");
+        goToPage("cart");
 
         if (window.bootstrap && window.bootstrap.Modal) {
           const modal = bootstrap.Modal.getInstance(overviewModal);
@@ -855,12 +809,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Enable/disable confirm button
     if (confirmPurchaseBtn) confirmPurchaseBtn.disabled = !valid;
     return valid;
-  }
-
-  function fadeInSection(section) {
-    if (section && !section.classList.contains("visible")) {
-      section.classList.add("visible");
-    }
   }
 
 });

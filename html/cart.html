@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JazStation</title>
+  <link href="/dist/styles.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand linktest" href="/">JazStation</a>
+      <button class="navbar-toggler" type="button">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link linktest" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="/products">Games</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="/about">About</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="/contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="/cart">🛒 Cart</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+    <!-- CART -->
+    <main>
+      <section id="cart" class="page-fade">
+        <div class="container py-5">
+          <h2 class="text-center mb-4">Your Cart</h2>
+          <div id="cart-items"></div>
+          <div id="cart-total" class="text-center mt-4"></div>
+          <div id="checkout-btn-row" class="text-center mt-4 d-none">
+            <button id="checkout-btn" class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#checkoutModal" disabled>Checkout</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  <!-- FOOTER -->
+  <footer class="footer bg-dark text-white text-center py-3">
+    <p class="mb-0">© 2025 JazStation | Web Development Activity</p>
+  </footer>
+
+  <!-- Checkout Modal -->
+  <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="checkoutModalLabel">Checkout</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="checkout-summary"></div>
+          <form id="checkout-form" class="mt-4">
+            <div class="mb-3">
+              <label for="checkout-email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="checkout-email" required autocomplete="email" placeholder="you@email.com">
+              <div class="invalid-feedback">Please enter a valid email.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Payment Method</label>
+              <div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="payment-method" id="pay-card" value="card" required>
+                  <label class="form-check-label" for="pay-card">Card</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="payment-method" id="pay-paypal" value="paypal">
+                  <label class="form-check-label" for="pay-paypal">PayPal</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="payment-method" id="pay-gcash" value="gcash">
+                  <label class="form-check-label" for="pay-gcash">GCash</label>
+                </div>
+              </div>
+              <div class="invalid-feedback d-block" id="payment-method-feedback" style="display:none;">Please select a payment method.</div>
+            </div>
+            <div id="card-details" style="display:none;">
+              <div class="mb-3">
+                <label for="card-number" class="form-label">Card Number</label>
+                <input type="text" class="form-control" id="card-number" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" pattern="[\d ]{16,19}">
+                <div class="invalid-feedback">Enter a valid card number.</div>
+              </div>
+              <div class="mb-3 row">
+                <div class="col">
+                  <label for="card-expiry" class="form-label">Expiry (MM/YY)</label>
+                  <input type="text" class="form-control" id="card-expiry" maxlength="5" placeholder="MM/YY" pattern="\d{2}/\d{2}">
+                  <div class="invalid-feedback">Enter a valid expiry date.</div>
+                </div>
+                <div class="col">
+                  <label for="card-cvc" class="form-label">CVC</label>
+                  <input type="text" class="form-control" id="card-cvc" maxlength="4" placeholder="123" pattern="\d{3,4}">
+                  <div class="invalid-feedback">Enter a valid CVC.</div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="card-name" class="form-label">Name on Card</label>
+                <input type="text" class="form-control" id="card-name" maxlength="40" placeholder="Cardholder Name">
+                <div class="invalid-feedback">Enter the cardholder's name.</div>
+              </div>
+            </div>
+          </form>
+          <div id="checkout-thankyou" class="text-center" style="display:none;">
+            <div class="alert alert-success">Thank you for your purchase! Your game's download link and transaction receipt will be sent to your email address.</div>
+            <button id="thankyou-confirm-btn" class="btn btn-primary mt-3" type="button" data-bs-dismiss="modal">Confirm</button>
+          </div>
+        </div>
+        <div class="modal-footer" id="checkout-modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button id="confirm-purchase-btn" type="button" class="btn btn-success" disabled>Confirm Purchase</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/script.js"></script>
+  <script src="/bootstrap.bundle.min.js"></script>
+</body>
+</html>

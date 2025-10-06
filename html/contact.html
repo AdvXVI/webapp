@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JazStation</title>
+  <link href="/dist/styles.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand linktest" href="/">JazStation</a>
+      <button class="navbar-toggler" type="button">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link linktest" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="/products">Games</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="/about">About</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="/contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="/cart">🛒 Cart</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+    <!-- CONTACT -->
+    <main>
+      <section id="contact" class="page-fade">
+        <div class="container py-5">
+          <h2 class="text-center mb-4">Contact Us</h2>
+          <p class="text-center">You can also reach us via email: gameshq@jazstation.com</p>
+          <form id="contact-form" class="mx-auto" style="max-width:500px;">
+            <div id="contact-success" class="alert alert-success mt-3 d-none" role="alert">
+              Message sent! Thank you for contacting us.
+            </div>
+            <div class="mb-3">
+              <label for="contact-name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="contact-name" required>
+            </div>
+            <div class="mb-3">
+              <label for="contact-email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="contact-email" required>
+            </div>
+            <div class="mb-3">
+              <label for="contact-message" class="form-label">Message</label>
+              <textarea class="form-control" id="contact-message" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Send Message</button>
+            <p class="text-center"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+  <!-- FOOTER -->
+  <footer class="footer bg-dark text-white text-center py-3">
+    <p class="mb-0">© 2025 JazStation | Web Development Activity</p>
+  </footer>
+
+  <script src="/script.js"></script>
+  <script src="/bootstrap.bundle.min.js"></script>
+</body>
+</html>
