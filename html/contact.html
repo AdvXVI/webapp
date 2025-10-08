@@ -8,6 +8,12 @@
 </head>
 
 <body>
+  <!-- ALERT -->
+  <div id="global-alert-container" 
+    class="position-fixed top-0 start-50 translate-middle-x mt-3 d-flex flex-column gap-2 align-items-center"
+    style="z-index: 1055; max-width: 400px;">
+  </div>
+  
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
@@ -22,6 +28,7 @@
           <li class="nav-item"><a class="nav-link linktest" href="/about">About</a></li>
           <li class="nav-item"><a class="nav-link linktest" href="/contact">Contact</a></li>
           <li class="nav-item"><a class="nav-link linktest" href="/cart">🛒 Cart</a></li>
+          <li class="nav-item"><a class="nav-link linktest" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></li>
         </ul>
       </div>
     </div>
@@ -35,22 +42,24 @@
           <p class="text-center">You can also reach us via email: gameshq@jazstation.com</p>
           <form id="contact-form" class="mx-auto" style="max-width:500px;">
             <div id="contact-success" class="alert alert-success mt-3 d-none" role="alert">
-              Message sent! Thank you for contacting us.
+              Message sent successfully!
             </div>
             <div class="mb-3">
               <label for="contact-name" class="form-label">Name</label>
               <input type="text" class="form-control" id="contact-name" required>
+              <div class="invalid-feedback" id="name-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="contact-email" class="form-label">Email</label>
               <input type="email" class="form-control" id="contact-email" required>
+              <div class="invalid-feedback">Please enter a valid email address.</div>
             </div>
             <div class="mb-3">
               <label for="contact-message" class="form-label">Message</label>
               <textarea class="form-control" id="contact-message" rows="4" required></textarea>
+              <div class="invalid-feedback" id="message-feedback"></div>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Send Message</button>
-            <p class="text-center"></p>
+            <button type="submit" class="btn btn-primary">Send Message</button>
           </form>
         </div>
       </section>
@@ -61,7 +70,100 @@
     <p class="mb-0">© 2025 JazStation | Web Development Activity</p>
   </footer>
 
+  <!-- LOGIN MODAL -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="login-form" novalidate>
+            <div class="mb-3">
+              <label for="login-email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="login-email" placeholder="you@email.com" required>
+            </div>
+            <div class="mb-3">
+              <label for="login-password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="login-password" placeholder="••••••••" required>
+                <div id="login-invalid-feedback" class="invalid-feedback" style="display: none;">
+                  Invalid email or password.
+                </div>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <small>
+            No account yet?
+            <a href="#" id="openSignup" class="text-decoration-none text-primary" data-bs-toggle="modal" data-bs-target="#signupModal">Sign up here</a>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGN UP MODAL -->
+  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-3">
+            <small>
+              Already have an account?
+              <a href="#" id="openLogin" class="text-decoration-none text-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Login here</a>
+            </small>
+          </div>
+          <form id="signup-form" novalidate>
+            <div class="mb-3">
+              <label for="signup-name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="signup-name" required>
+              <div class="invalid-feedback">Please enter your name.</div>
+            </div>
+            <div class="mb-3">
+              <label for="signup-email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="signup-email" required>
+              <div class="invalid-feedback">Please enter a valid email.</div>
+            </div>
+            <div class="mb-3">
+              <label for="signup-address" class="form-label">Address</label>
+              <input type="text" class="form-control" id="signup-address" required>
+              <div class="invalid-feedback">Please enter your address.</div>
+            </div>
+            <div class="mb-3">
+              <label for="signup-contact" class="form-label">Contact Number</label>
+              <input type="tel" class="form-control" id="signup-contact" pattern="\\d+" required>
+              <div class="invalid-feedback">Please enter a valid contact number (6–19 digits).</div>
+            </div>
+            <div class="mb-3">
+              <label for="signup-password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="signup-password" required>
+              <div class="invalid-feedback">Please enter your password.</div>
+            </div>
+            <div class="mb-3">
+              <label for="signup-confirm" class="form-label">Retype Password</label>
+              <input type="password" class="form-control" id="signup-confirm" required>
+              <div class="invalid-feedback">Passwords do not match.</div>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success">Create Account</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <script src="/script.js"></script>
+  <script src="/jquery-3.7.1.min.js"></script>
   <script src="/bootstrap.bundle.min.js"></script>
 </body>
 </html>

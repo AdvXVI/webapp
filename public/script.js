@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // --- Overview Modal DOM references ---
+    // --- Overview Modal ---
   const overviewModal = document.getElementById("overviewModal");
   const overviewModalLabel = document.getElementById("overviewModalLabel");
   const overviewCarouselInner = document.getElementById("overview-carousel-inner");
@@ -11,8 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const overviewCarouselPreviews = document.getElementById("overview-carousel-previews");
   let currentOverviewProductId = null;
 
-  // Checkout Modal logic
-  const checkoutModalElem = document.getElementById('checkoutModal');
+  // Checkout Modal
   const checkoutBtn = document.getElementById("checkout-btn");
   const checkoutSummary = document.getElementById("checkout-summary");
   const confirmPurchaseBtn = document.getElementById("confirm-purchase-btn");
@@ -21,24 +20,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkoutModalFooter = document.getElementById("checkout-modal-footer");
   const thankyouConfirmBtn = document.getElementById("thankyou-confirm-btn");
 
-    // --- Checkout Form Validation ---
-  const emailInput = document.getElementById("checkout-email");
-  const cardDetails = document.getElementById("card-details");
-  const cardNumber = document.getElementById("card-number");
-  const cardExpiry = document.getElementById("card-expiry");
-  const cardCvc = document.getElementById("card-cvc");
-  const cardName = document.getElementById("card-name");
-  const paymentRadios = document.querySelectorAll('input[name="payment-method"]');
-  const paymentFeedback = document.getElementById("payment-method-feedback");
-
-  // Track touched state for each field
-  const touched = {
-    email: false,
-    payment: false,
-    cardNumber: false,
-    cardExpiry: false,
-    cardCvc: false,
-    cardName: false
+  const fieldValidators = {
+    'checkout-email': validateEmail,
+    'card-number': validateCardNumber,
+    'card-expiry': validateExpiry,
+    'card-cvc': validateCVC,
+    'card-name': validateCardName
   };
 
   const savedCart = localStorage.getItem("cart");
@@ -47,9 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentGenre = "all";
   let currentSort = "az"; // default
   const sortSelect = document.getElementById("product-sort");
-  const contactForm = document.getElementById("contact-form");
   
-
   /*
   // Render featured games on load and when navigating to Home
   document.querySelector('a[href="/"]').addEventListener("click", () => {
@@ -226,140 +211,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-   // Mark fields as touched on first input/change/blur
-  if (emailInput) {
-    emailInput.addEventListener("blur", () => { touched.email = true; validateForm(); });
-    emailInput.addEventListener("input", () => { touched.email = true; validateForm(); });
-  }
-
-  if (paymentRadios.length) {
-    paymentRadios.forEach(radio => {
-      radio.addEventListener("change", () => {
-        touched.payment = true;
-        if (getSelectedPayment() === "card") {
-          cardDetails.style.display = "";
-        } else {
-          cardDetails.style.display = "none";
-        }
-        validateForm();
-      });
-    });
-  }
-
-  if (cardNumber) {
-    cardNumber.addEventListener("blur", () => { touched.cardNumber = true; validateForm(); });
-    cardNumber.addEventListener("input", () => { touched.cardNumber = true; validateForm(); });
-  }
-
-  if (cardExpiry) {
-    cardExpiry.addEventListener("blur", () => { touched.cardExpiry = true; validateForm(); });
-    cardExpiry.addEventListener("input", () => { touched.cardExpiry = true; validateForm(); });
-  }
-
-  if (cardCvc) {
-    cardCvc.addEventListener("blur", () => { touched.cardCvc = true; validateForm(); });
-    cardCvc.addEventListener("input", () => { touched.cardCvc = true; validateForm(); });
-  }
-
-  if (cardName) {
-    cardName.addEventListener("blur", () => { touched.cardName = true; validateForm(); });
-    cardName.addEventListener("input", () => { touched.cardName = true; validateForm(); });
-  }
-
-  // Validate on input/change for real-time button enable/disable
-  if (checkoutForm) {
-    checkoutForm.addEventListener("input", validateForm);
-    checkoutForm.addEventListener("change", validateForm);
-  }
-
-  // Populate checkout summary when modal is shown
-  if (checkoutBtn && checkoutSummary) {
-    checkoutBtn.addEventListener("click", () => {
-      if (cart.length === 0) {
-        checkoutSummary.innerHTML = "<p>Your cart is empty.</p>";
-        return;
-      }
-      let html = `<table class="table">
-        <thead>
-          <tr>
-            <th>Game</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>Subtotal</th>
-          </tr>
-        </thead>
-        <tbody>`;
-      let total = 0;
-      cart.forEach(item => {
-        const subtotal = item.price * item.qty;
-        total += subtotal;
-        html += `<tr>
-          <td>${item.name}</td>
-          <td>₱${item.price}</td>
-          <td>${item.qty}</td>
-          <td>₱${subtotal}</td>
-        </tr>`;
-      });
-      html += `</tbody></table>
-        <div class="text-end"><strong>Total: ₱${total}</strong></div>`;
-      checkoutSummary.innerHTML = html;
-
-      // Reset thank you state
-      if (checkoutThankyou) checkoutThankyou.style.display = "none";
-      if (checkoutForm) checkoutForm.style.display = "";
-      if (checkoutModalFooter) checkoutModalFooter.style.display = "";
-    });
-  }
-
-  // Confirm purchase handler
-  if (confirmPurchaseBtn) {
-    confirmPurchaseBtn.addEventListener("click", () => {
-      // Validate before purchase
-      if (!validateForm()) return;
-      // Show thank you, hide form and footer
-      if (checkoutThankyou) checkoutThankyou.style.display = "";
-      if (checkoutForm) checkoutForm.style.display = "none";
-      if (checkoutModalFooter) checkoutModalFooter.style.display = "none";
-      cart.length = 0;
-      renderCart();
-      updateCheckoutButton();
-    });
-  }
-
-  // Thank you confirm button closes modal
-  if (thankyouConfirmBtn) {
-    thankyouConfirmBtn.addEventListener("click", () => {
-      // Modal will close via data-bs-dismiss="modal"
-      // Optionally, reset modal state for next open
-      setTimeout(() => {
-        if (checkoutThankyou) checkoutThankyou.style.display = "none";
-        if (checkoutForm) checkoutForm.style.display = "";
-        if (checkoutModalFooter) checkoutModalFooter.style.display = "";
-      }, 300);
-    });
-  }
-
-  // Contact form handler
-  if (contactForm) {
-    contactForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      // Optionally, validate fields here
-      contactForm.reset();
-      const success = document.getElementById("contact-success");
-      if (success) {
-        success.classList.remove("d-none");
-        setTimeout(() => {
-          success.classList.add("d-none");
-        }, 3000);
-      }
-    });
-  }
-
   renderCart();
   renderProductCategories();
   renderProductsSection();
   renderFeaturedGames();
+  setupLoginForm();
+  setupSignupForm();
+  setupContactForm();
+  setupCheckoutForm();
+  setupCheckoutSummary();
+  setupCheckoutActions();
 
+  // resetModalForm('#loginModal');
+  // resetModalForm('#signupModal');
+  // resetModalForm('#checkoutModal');
 
   function goToPage(pageName) {
     const routes = {
@@ -390,7 +255,6 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }
 
-  // Render Featured Games in Home section
   function renderFeaturedGames() {
     const featuredDiv = document.getElementById('featured-games');
     if (!featuredDiv) return;
@@ -491,7 +355,13 @@ document.addEventListener("DOMContentLoaded", () => {
       input.addEventListener("change", e => {
         const idx = parseInt(input.dataset.idx);
         let val = parseInt(input.value);
+
         if (isNaN(val) || val < 1) val = 1;
+        if (val > 99) {
+          val = 99;
+          showAlert("Max quantity reached (99).");
+        }
+
         cart[idx].qty = val;
         renderCart();
       });
@@ -511,7 +381,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCheckoutButton();
   }
 
-  // --- set active preview image ---
   function setActivePreview(idx) {
     if (!overviewCarouselPreviews) return;
     overviewCarouselPreviews.querySelectorAll("img").forEach((img, i) => {
@@ -519,7 +388,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Render Categories (Genres) ---
   function renderProductCategories() {
     const categoriesDiv = document.getElementById('product-categories');
     if (!categoriesDiv) return;
@@ -542,7 +410,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Render Products Section ---
   function renderProductsSection(filterGenre = "all", sortBy = "az") {
     const productsList = document.getElementById('products-list');
     if (!productsList) return;
@@ -586,7 +453,6 @@ document.addEventListener("DOMContentLoaded", () => {
     attachOverviewModalListeners();
   }
 
-  // --- Attach Product Event Listeners ---
   function attachProductEventListeners() {
     // Add to Cart handler (Products section)
     document.querySelectorAll(".add-to-cart").forEach(btn => {
@@ -608,7 +474,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Attach Overview Modal Event Listeners ---
   function attachOverviewModalListeners() {
     // Remove previous listeners to avoid duplicates
     document.querySelectorAll(".overview-btn").forEach(btn => {
@@ -711,7 +576,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- Override getAllProducts to use productData ---
   function getAllProducts() {
     return Object.entries(productData).map(([id, data]) => ({
       name: data.name,
@@ -720,9 +584,343 @@ document.addEventListener("DOMContentLoaded", () => {
     }));
   }
 
+  function setupLoginForm() {
+    const $email = $('#login-email');
+    const $password = $('#login-password');
+    const $invalid = $('#login-invalid-feedback');
+
+    restrictToEmail($email);
+
+    $email.on('input', () => validateField($email, validateEmail));
+    $password.on('input', () => validateField($password, validateNotEmpty));
+
+    $(document).on('submit', '#login-form', function (e) {
+      e.preventDefault();
+      const emailOk = validateField($email, validateEmail);
+      const passOk = validateField($password, validateNotEmpty);
+
+      if (!emailOk || !passOk) {
+        $invalid.show();
+        $email.addClass('is-invalid');
+        $password.addClass('is-invalid');
+        return;
+      }
+
+      $invalid.hide();
+      console.log('Login success:', { email: $email.val(), password: $password.val() });
+      bootstrap.Modal.getInstance(document.getElementById('loginModal'))?.hide();
+    });
+  }
+
+  function setupSignupForm() {
+    const $name = $('#signup-name');
+    const $email = $('#signup-email');
+    const $address = $('#signup-address');
+    const $contact = $('#signup-contact');
+    const $password = $('#signup-password');
+    const $confirm = $('#signup-confirm');
+
+    restrictToEmail($email);
+
+    restrictToDigits($contact);
+
+    $name.on('input', () => validateField($name, validateNotEmpty));
+    $email.on('input', () => validateField($email, validateEmail));
+    $address.on('input', () => validateField($address, validateNotEmpty));
+    $contact.on('input', () => validateField($contact, validateContact));
+    $password.on('input', () => {validateField($password, validateNotEmpty), validateField($confirm, val => val === $.trim($password.val()) && val.length > 0)});
+    $confirm.on('input', () =>
+      validateField($confirm, val => val === $.trim($password.val()) && val.length > 0)
+    );
+
+    $(document).on('submit', '#signup-form', function (e) {
+      e.preventDefault();
+
+      const valid =
+        validateField($name, validateNotEmpty) &&
+        validateField($email, validateEmail) &&
+        validateField($address, validateNotEmpty) &&
+        validateField($contact, validateContact) &&
+        validateField($password, validateNotEmpty) &&
+        validateField($confirm, val => val === $.trim($password.val()) && val.length > 0);
+
+      if (!valid) return;
+
+      console.log('Signup success:', {
+        name: $name.val(),
+        email: $email.val(),
+        address: $address.val(),
+        contact: $contact.val(),
+        password: $password.val()
+      });
+      bootstrap.Modal.getInstance(document.getElementById('signupModal'))?.hide();
+    });
+  }
+
+  function setupContactForm() {
+    const $form = $('#contact-form');
+    const $name = $('#contact-name');
+    const $email = $('#contact-email');
+    const $message = $('#contact-message');
+    const $success = $('#contact-success');
+
+    if (!$form.length) return;
+
+    restrictToEmail($email);
+
+    $form.on('submit', function (e) {
+      e.preventDefault();
+      let valid = true;
+
+      if (!validateName($name.val())) {
+        $name.addClass('is-invalid');
+        valid = false;
+      } else {
+        $name.removeClass('is-invalid');
+      }
+
+      if (!validateEmail($email.val())) {
+        $email.addClass('is-invalid');
+        valid = false;
+      } else {
+        $email.removeClass('is-invalid');
+      }
+
+      if (!validateMessage($message.val())) {
+        $message.addClass('is-invalid');
+        valid = false;
+      } else {
+        $message.removeClass('is-invalid');
+      }
+
+      if (!valid) return;
+
+      // Success
+      showAlert("Your message has been sent!", "success");
+      $success.removeClass('d-none');
+
+      $form[0].reset();
+      $name.removeClass('is-invalid');
+      $email.removeClass('is-invalid');
+      $message.removeClass('is-invalid');
+
+      setTimeout(() => {
+        $success.addClass('d-none');
+      }, 3000);
+    });
+
+    $name.on('input', () => {
+      const val = $name.val();
+      const $feedback = $('#name-feedback');
+      if (val.trim().length === 0) {
+        $feedback.text('Please enter your name.');
+        $name.addClass('is-invalid');
+      } else if (val.trim().length >= 30) {
+        $feedback.text('Name must be less than 30 characters.');
+        $name.addClass('is-invalid');
+      } else {
+        $name.removeClass('is-invalid');
+      }
+    });
+
+    $email.on('input', () => {
+      if (validateEmail($email.val())) {
+        $email.removeClass('is-invalid');
+      } else {
+        $email.addClass('is-invalid');
+      }
+    });
+
+    $message.on('input', () => {
+      const val = $message.val();
+      const $feedback = $('#message-feedback');
+      if (val.trim().length === 0) {
+        $feedback.text('Please enter your message.');
+        $message.addClass('is-invalid');
+      } else if (val.trim().length >= 1000) {
+        $feedback.text('Message must be less than 1,000 characters.');
+        $message.addClass('is-invalid');
+      } else {
+        $message.removeClass('is-invalid');
+      }
+    });
+  }
+
+  //if functions keep growing baka setup nlng ng new function setupCheckoutModal that keeps
+  //all checkout related funcs (easier call to ready func)
+
+  function setupCheckoutForm() {
+    const $fields = $('#checkout-form input, #checkout-form select');
+    const $confirm = $('#confirm-purchase-btn');
+    const $email = $('#checkout-email');
+
+    restrictToEmail($email);
+
+    // Real-time validation for inputs
+    $fields.each(function () {
+      const id = this.id;
+      const validator = fieldValidators[id];
+      if (validator) {
+        $(this).on('input change', () => validateField($(this), validator));
+      }
+    });
+
+    // Real-time validation for payment method radios
+    $('input[name="payment-method"]').on('change', () => {
+      validatePaymentMethod();
+      toggleCardFields();
+    });
+
+    // Form submit
+    $('#checkout-form').on('submit', function (e) {
+      e.preventDefault();
+      if (!validateCheckoutForm()) return;
+      console.log('✅ Checkout successful');
+      bootstrap.Modal.getInstance(document.getElementById('checkoutModal'))?.hide();
+      // TODO: clear cart, show thank you message, etc.
+    });
+
+    // Update confirm button enable state as user types
+    $fields.add('input[name="payment-method"]').on('input change', () => {
+      $confirm.prop('disabled', !validateCheckoutForm(false));
+    });
+  }
+
+  function setupCheckoutSummary() {
+    if (checkoutBtn && checkoutSummary) {
+      checkoutBtn.addEventListener("click", () => {
+        if (cart.length === 0) {
+          checkoutSummary.innerHTML = "<p>Your cart is empty.</p>";
+          return;
+        }
+
+        let html = `<table class="table table-dark table-striped align-middle">
+          <thead>
+            <tr>
+              <th>Game</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>`;
+        let total = 0;
+
+        cart.forEach(item => {
+          const subtotal = item.price * item.qty;
+          total += subtotal;
+          html += `
+            <tr>
+              <td>${item.name}</td>
+              <td>₱${item.price}</td>
+              <td>${item.qty}</td>
+              <td>₱${subtotal}</td>
+            </tr>`;
+        });
+
+        html += `</tbody></table>
+          <div class="text-end"><strong>Total: ₱${total}</strong></div>`;
+        checkoutSummary.innerHTML = html;
+
+        // reset UI state if already purchased earlier
+        if (checkoutThankyou) checkoutThankyou.style.display = "none";
+        if (checkoutForm) checkoutForm.style.display = "";
+        if (checkoutModalFooter) checkoutModalFooter.style.display = "";
+      });
+    }
+  }
+
+  function setupCheckoutActions() {
+    if (confirmPurchaseBtn) {
+      confirmPurchaseBtn.addEventListener("click", () => {
+        // Validate before processing
+        if (!validateCheckoutForm()) return;
+
+        // Show thank you message
+        if (checkoutThankyou) checkoutThankyou.style.display = "";
+        if (checkoutForm) checkoutForm.style.display = "none";
+        if (checkoutModalFooter) checkoutModalFooter.style.display = "none";
+
+        // Clear the cart
+        cart.length = 0;
+        renderCart();
+        updateCheckoutButton();
+      });
+    }
+
+    // Thank you confirmation (closes modal)
+    if (thankyouConfirmBtn) {
+      thankyouConfirmBtn.addEventListener("click", () => {
+        // Optional delay to give Bootstrap time to hide modal
+        setTimeout(() => {
+          if (checkoutThankyou) checkoutThankyou.style.display = "none";
+          if (checkoutForm) checkoutForm.style.display = "";
+          if (checkoutModalFooter) checkoutModalFooter.style.display = "";
+        }, 300);
+      });
+    }
+  }
+
+  //clears modal inputs
+  function resetModalForm(modalSelector) {
+    const $modal = $(modalSelector);
+
+    // When modal is fully hidden
+    $modal.on('hidden.bs.modal', function () {
+      const $form = $modal.find('form');
+      $form.trigger('reset'); // clear all values
+
+      // remove invalid classes
+      $form.find('.is-invalid').removeClass('is-invalid');
+
+      // hide any shared error feedbacks like login
+      $form.find('.invalid-feedback').hide();
+    });
+  }
+
+  function restrictToDigits($el) {
+    $el.on('keypress', e => {
+      if (!/[0-9]/.test(String.fromCharCode(e.which))) e.preventDefault();
+    });
+  }
+
+  function restrictToEmail($el) {
+    $el.on('keypress', e => {
+      const char = String.fromCharCode(e.which);
+      const val = $el.val();
+      if (!/[a-zA-Z0-9._@-]/.test(char) || (char === '@' && val.includes('@'))) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  function validateField($field, validator) {
+    const value = $.trim($field.val());
+    const isValid = validator(value);
+    $field.toggleClass('is-invalid', !isValid);
+    return isValid;
+  }
+
+  function validateName(val) {
+    const trimmed = val.trim();
+    return trimmed.length > 0 && trimmed.length < 30;
+  }
+
+  function validateMessage(val) {
+    const trimmed = val.trim();
+    return trimmed.length > 0 && trimmed.length < 1000;
+  }
+
   function validateEmail(email) {
-    // Simple email regex
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/.test(email);
+  }
+
+  function validateNotEmpty(str) {
+    return str.length > 0;
+  }
+
+  function validateContact(contact) {
+    return /^\d{6,19}$/.test(contact);
   }
 
   function validateCardNumber(num) {
@@ -750,65 +948,99 @@ document.addEventListener("DOMContentLoaded", () => {
     return name.trim().length > 0;
   }
 
-  function getSelectedPayment() {
-    const checked = Array.from(paymentRadios).find(r => r.checked);
-    return checked ? checked.value : null;
+  function validatePaymentMethod() {
+    const checked = $('input[name="payment-method"]:checked').val();
+    const $feedback = $('#payment-method-feedback');
+    if (!checked) {
+      $feedback.show();
+      return false;
+    }
+    $feedback.hide();
+    return true;
   }
 
-  function validateForm() {
+  function toggleCardFields() {
+    const checked = $('input[name="payment-method"]:checked').val();
+    const $cardDetails = $('#card-details');
+    if (checked === 'card') {
+      $cardDetails.slideDown();
+    } else {
+      $cardDetails.slideUp();
+      // reset validation states when switching away from card
+      $('#card-number, #card-expiry, #card-cvc, #card-name').removeClass('is-invalid');
+    }
+  }
+
+  function validateCheckoutForm() {
     let valid = true;
 
     // Email
-    if (!emailInput.value || !validateEmail(emailInput.value)) {
-      if (touched.email) emailInput.classList.add("is-invalid");
-      valid = false;
-    } else {
-      emailInput.classList.remove("is-invalid");
+    const $email = $('#checkout-email');
+    if (!validateField($email, validateEmail)) valid = false;
+
+    // Payment
+    const methodValid = validatePaymentMethod();
+    if (!methodValid) valid = false;
+
+    // Card fields if card is selected
+    const checked = $('input[name="payment-method"]:checked').val();
+    if (checked === 'card') {
+      const cardIds = ['card-number', 'card-expiry', 'card-cvc', 'card-name'];
+      cardIds.forEach(id => {
+        const $el = $('#' + id);
+        if (!validateField($el, fieldValidators[id])) valid = false;
+      });
     }
 
-    // Payment method
-    const payment = getSelectedPayment();
-    if (!payment) {
-      if (touched.payment) paymentFeedback.style.display = "";
-      valid = false;
-    } else {
-      paymentFeedback.style.display = "none";
-    }
-
-    // Card details if Card is selected
-    if (payment === "card") {
-      if (!validateCardNumber(cardNumber.value)) {
-        if (touched.cardNumber) cardNumber.classList.add("is-invalid");
-        valid = false;
-      } else {
-        cardNumber.classList.remove("is-invalid");
-      }
-      if (!validateExpiry(cardExpiry.value)) {
-        if (touched.cardExpiry) cardExpiry.classList.add("is-invalid");
-        valid = false;
-      } else {
-        cardExpiry.classList.remove("is-invalid");
-      }
-      if (!validateCVC(cardCvc.value)) {
-        if (touched.cardCvc) cardCvc.classList.add("is-invalid");
-        valid = false;
-      } else {
-        cardCvc.classList.remove("is-invalid");
-      }
-      if (!validateCardName(cardName.value)) {
-        if (touched.cardName) cardName.classList.add("is-invalid");
-        valid = false;
-      } else {
-        cardName.classList.remove("is-invalid");
-      }
-    } else {
-      // Remove card field errors if not card
-      [cardNumber, cardExpiry, cardCvc, cardName].forEach(f => f && f.classList.remove("is-invalid"));
-    }
-
-    // Enable/disable confirm button
-    if (confirmPurchaseBtn) confirmPurchaseBtn.disabled = !valid;
+    $('#confirm-purchase-btn').prop('disabled', !valid);
     return valid;
+  }
+
+  function showAlert(message, type = "danger", duration = 3000) {
+    const container = document.getElementById("global-alert-container");
+    if (!container) return;
+
+    // Cap to max 3 alerts, remove oldest if needed
+    const alerts = container.querySelectorAll(".alert");
+    if (alerts.length >= 3) {
+      const oldest = alerts[0];
+      const bsOldest = bootstrap.Alert.getOrCreateInstance(oldest);
+      oldest.classList.add("alert-exit-active");
+      setTimeout(() => bsOldest.close(), 300);
+    }
+
+    // Create alert element
+    const alertDiv = document.createElement("div");
+    alertDiv.className = `alert alert-${type} alert-dismissible text-center shadow fade show alert-enter`;
+    alertDiv.setAttribute("role", "alert");
+    alertDiv.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+    container.appendChild(alertDiv);
+
+    // Animate in
+    requestAnimationFrame(() => {
+      alertDiv.classList.remove("alert-enter");
+      alertDiv.classList.add("alert-enter-active");
+    });
+
+    // Auto-dismiss after duration (if > 0)
+    if (duration > 0) {
+      setTimeout(() => {
+        alertDiv.classList.remove("alert-enter-active");
+        alertDiv.classList.add("alert-exit-active");
+        const bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
+        setTimeout(() => bsAlert.close(), 300);
+      }, duration);
+    }
+
+    // Animate out when closed manually
+    alertDiv.addEventListener('close.bs.alert', () => {
+      alertDiv.classList.remove("alert-enter-active");
+      alertDiv.classList.add("alert-exit-active");
+    });
   }
 
 });

@@ -215,6 +215,29 @@ section h2 {
   opacity: 1;
 }
 
+/* Global Alert Animations */
+.alert-enter {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.alert-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.alert-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.alert-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
 #overview-carousel-previews img {
     width: 56px;
     height: 40px;
