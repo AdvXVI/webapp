@@ -96,7 +96,7 @@
   </div>
 
   <!-- LOGIN MODAL -->
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -132,7 +132,7 @@
   </div>
 
   <!-- SIGN UP MODAL -->
-  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -149,32 +149,32 @@
           <form id="signup-form" novalidate>
             <div class="mb-3">
               <label for="signup-name" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="signup-name" required>
+              <input type="text" class="form-control" id="signup-name" maxlength="30" placeholder="JDent Pascual" required>
               <div class="invalid-feedback">Please enter your name.</div>
             </div>
             <div class="mb-3">
               <label for="signup-email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="signup-email" required>
+              <input type="email" class="form-control" id="signup-email" placeholder="jdent@gmail.com" required>
               <div class="invalid-feedback">Please enter a valid email.</div>
             </div>
             <div class="mb-3">
               <label for="signup-address" class="form-label">Address</label>
-              <input type="text" class="form-control" id="signup-address" required>
+              <input type="text" class="form-control" id="signup-address" maxlength="50" placeholder="Brgy. Malaki, Dent City" required>
               <div class="invalid-feedback">Please enter your address.</div>
             </div>
             <div class="mb-3">
               <label for="signup-contact" class="form-label">Contact Number</label>
-              <input type="tel" class="form-control" id="signup-contact" pattern="\\d+" required>
+              <input type="tel" class="form-control" id="signup-contact" pattern="\\d+" maxlength="19" placeholder="09123456789" required>
               <div class="invalid-feedback">Please enter a valid contact number (6–19 digits).</div>
             </div>
             <div class="mb-3">
               <label for="signup-password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="signup-password" required>
+              <input type="password" class="form-control" id="signup-password" placeholder="••••••••" required>
               <div class="invalid-feedback">Please enter your password.</div>
             </div>
             <div class="mb-3">
               <label for="signup-confirm" class="form-label">Retype Password</label>
-              <input type="password" class="form-control" id="signup-confirm" required>
+              <input type="password" class="form-control" id="signup-confirm" placeholder="••••••••" required>
               <div class="invalid-feedback">Passwords do not match.</div>
             </div>
             <div class="d-grid">

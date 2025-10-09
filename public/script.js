@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     'card-number': validateCardNumber,
     'card-expiry': validateExpiry,
     'card-cvc': validateCVC,
-    'card-name': validateCardName
+    'card-name': validateTextInput
   };
 
   const savedCart = localStorage.getItem("cart");
@@ -585,16 +585,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setupLoginForm() {
+    const $form = $('#login-form');
     const $email = $('#login-email');
     const $password = $('#login-password');
     const $invalid = $('#login-invalid-feedback');
 
     restrictToEmail($email);
 
-    $email.on('input', () => validateField($email, validateEmail));
-    $password.on('input', () => validateField($password, validateNotEmpty));
+    $email.on('input blur', () => validateField($email, validateEmail));
+    $password.on('input blur', () => validateField($password, validateNotEmpty));
 
-    $(document).on('submit', '#login-form', function (e) {
+    $form.on('submit', function (e) {
       e.preventDefault();
       const emailOk = validateField($email, validateEmail);
       const passOk = validateField($password, validateNotEmpty);
@@ -613,6 +614,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setupSignupForm() {
+    const $form = $('#signup-form');
     const $name = $('#signup-name');
     const $email = $('#signup-email');
     const $address = $('#signup-address');
@@ -624,22 +626,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     restrictToDigits($contact);
 
-    $name.on('input', () => validateField($name, validateNotEmpty));
-    $email.on('input', () => validateField($email, validateEmail));
-    $address.on('input', () => validateField($address, validateNotEmpty));
-    $contact.on('input', () => validateField($contact, validateContact));
-    $password.on('input', () => {validateField($password, validateNotEmpty), validateField($confirm, val => val === $.trim($password.val()) && val.length > 0)});
-    $confirm.on('input', () =>
+    $name.on('input blur', () => validateField($name, validateTextInput, 30));
+    $email.on('input blur', () => validateField($email, validateEmail));
+    $address.on('input blur', () => validateField($address, validateTextInput, 50));
+    $contact.on('input blur', () => validateField($contact, validateContact));
+    $password.on('input blur', () => {validateField($password, validateNotEmpty), validateField($confirm, val => val === $.trim($password.val()) && val.length > 0)});
+    $confirm.on('input blur', () =>
       validateField($confirm, val => val === $.trim($password.val()) && val.length > 0)
     );
 
-    $(document).on('submit', '#signup-form', function (e) {
+    $form.on('submit', function (e) {
       e.preventDefault();
 
       const valid =
-        validateField($name, validateNotEmpty) &&
+        validateField($name, validateTextInput, 30) &&
         validateField($email, validateEmail) &&
-        validateField($address, validateNotEmpty) &&
+        validateField($address, validateTextInput, 50) &&
         validateField($contact, validateContact) &&
         validateField($password, validateNotEmpty) &&
         validateField($confirm, val => val === $.trim($password.val()) && val.length > 0);
@@ -668,11 +670,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
     restrictToEmail($email);
 
+    $name.on('input blur', () => {
+      const val = $name.val();
+      const $feedback = $('#name-feedback');
+      if (val.trim().length === 0) {
+        $feedback.text('Please enter your name.');
+        $name.addClass('is-invalid');
+      } else if (val.trim().length > 31) {
+        $feedback.text('Name must be less than or equal to 30 characters.');
+        $name.addClass('is-invalid');
+      } else if (!validateTextInput($name.val())) {
+        $feedback.text('Please enter your name.');
+        $name.addClass('is-invalid');
+        valid = false;
+      } else {
+        $name.removeClass('is-invalid');
+      }
+    });
+
+    $email.on('input blur', () => {
+      if (validateEmail($email.val())) {
+        $email.removeClass('is-invalid');
+      } else {
+        $email.addClass('is-invalid');
+      }
+    });
+
+    $message.on('input blur', () => {
+      const val = $message.val();
+      const $feedback = $('#message-feedback');
+      if (val.trim().length === 0) {
+        $feedback.text('Please enter your message.');
+        $message.addClass('is-invalid');
+      } else if (val.trim().length >= 1000) {
+        $feedback.text('Message must be less than 1,000 characters.');
+        $message.addClass('is-invalid');
+      } else if (!validateTextInput($message.val())) {
+        $feedback.text('Please enter your message.');
+        $message.addClass('is-invalid');
+        valid = false;
+      } else {
+        $message.removeClass('is-invalid');
+      }
+    });
+
     $form.on('submit', function (e) {
       e.preventDefault();
       let valid = true;
 
-      if (!validateName($name.val())) {
+      if (!validateTextInput($name.val())) {
         $name.addClass('is-invalid');
         valid = false;
       } else {
@@ -686,7 +732,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $email.removeClass('is-invalid');
       }
 
-      if (!validateMessage($message.val())) {
+      if (!validateTextInput($message.val())) {
         $message.addClass('is-invalid');
         valid = false;
       } else {
@@ -708,42 +754,6 @@ document.addEventListener("DOMContentLoaded", () => {
         $success.addClass('d-none');
       }, 3000);
     });
-
-    $name.on('input', () => {
-      const val = $name.val();
-      const $feedback = $('#name-feedback');
-      if (val.trim().length === 0) {
-        $feedback.text('Please enter your name.');
-        $name.addClass('is-invalid');
-      } else if (val.trim().length >= 30) {
-        $feedback.text('Name must be less than 30 characters.');
-        $name.addClass('is-invalid');
-      } else {
-        $name.removeClass('is-invalid');
-      }
-    });
-
-    $email.on('input', () => {
-      if (validateEmail($email.val())) {
-        $email.removeClass('is-invalid');
-      } else {
-        $email.addClass('is-invalid');
-      }
-    });
-
-    $message.on('input', () => {
-      const val = $message.val();
-      const $feedback = $('#message-feedback');
-      if (val.trim().length === 0) {
-        $feedback.text('Please enter your message.');
-        $message.addClass('is-invalid');
-      } else if (val.trim().length >= 1000) {
-        $feedback.text('Message must be less than 1,000 characters.');
-        $message.addClass('is-invalid');
-      } else {
-        $message.removeClass('is-invalid');
-      }
-    });
   }
 
   //if functions keep growing baka setup nlng ng new function setupCheckoutModal that keeps
@@ -756,7 +766,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     restrictToEmail($email);
 
-    // Real-time validation for inputs
     $fields.each(function () {
       const id = this.id;
       const validator = fieldValidators[id];
@@ -894,29 +903,48 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function validateField($field, validator) {
+  function validateField($field, validator, ...args) {
     const value = $.trim($field.val());
-    const isValid = validator(value);
+    const isValid = validator(value, ...args);
     $field.toggleClass('is-invalid', !isValid);
     return isValid;
   }
 
-  function validateName(val) {
-    const trimmed = val.trim();
-    return trimmed.length > 0 && trimmed.length < 30;
+  function validateTextInput(value, maxLength = 1000) {
+    const trimmed = value.trim();
+    if (!trimmed) return false;
+    if (!/[a-zA-Z0-9]/.test(trimmed)) return false;
+    if (trimmed.length > maxLength) return false;
+    return true;
   }
 
-  function validateMessage(val) {
-    const trimmed = val.trim();
-    return trimmed.length > 0 && trimmed.length < 1000;
+  function validateNotEmpty(value) {
+    return value.trim().length > 0;
   }
 
   function validateEmail(email) {
-    return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/.test(email);
-  }
+    if (typeof email !== 'string') return false;
+    const s = email.trim();
 
-  function validateNotEmpty(str) {
-    return str.length > 0;
+    const parts = s.split('@');
+    if (parts.length !== 2) return false;
+
+    const [local, domain] = parts;
+    if (!local || !domain) return false;
+
+    // must start and end with alphanumeric, allowed chars in middle are . _ -
+    if (!/^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$/.test(local)) return false;
+
+    if (!/^[A-Za-z0-9.-]+\.[A-Za-z]{2,3}$/.test(domain)) return false;
+
+    const labels = domain.split('.');
+    for (const label of labels) {
+      if (label.length === 0) return false;             // no "example..com"
+      if (!/[A-Za-z0-9]/.test(label)) return false;     // label must include alnum
+      if (/^-|-$/.test(label)) return false;            // don't start/end with hyphen
+    }
+
+    return true;
   }
 
   function validateContact(contact) {
@@ -942,10 +970,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function validateCVC(cvc) {
     return /^\d{3,4}$/.test(cvc);
-  }
-
-  function validateCardName(name) {
-    return name.trim().length > 0;
   }
 
   function validatePaymentMethod() {

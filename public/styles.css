@@ -215,6 +215,20 @@ section h2 {
   opacity: 1;
 }
 
+.modal-backdrop {
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  background-color: rgba(0, 0, 0, 0);
+  transition: backdrop-filter 0.8s ease, background-color 0.8s ease;
+}
+
+.modal-backdrop.show {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.2);
+  opacity: 1 !important;
+}
+
 /* Global Alert Animations */
 .alert-enter {
   opacity: 0;
