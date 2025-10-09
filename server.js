@@ -12,6 +12,9 @@ const __dirname = path.dirname(__filename);
 // serve static files (css, js, images)
 app.use(express.static(path.join(__dirname, "public")));
 
+// Serve node_modules (for libraries)
+app.use('/lib', express.static(path.join(__dirname, 'node_modules')));
+
 // ROUTES
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "html", "index.html"));

@@ -887,6 +887,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  /*
+  dont change validation funcs :D nakalimutan ko jquery validation but works mostly the same
+  will refactor nalang later
+  */
+
   function restrictToDigits($el) {
     $el.on('keypress', e => {
       if (!/[0-9]/.test(String.fromCharCode(e.which))) e.preventDefault();
