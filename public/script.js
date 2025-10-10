@@ -20,13 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkoutModalFooter = document.getElementById("checkout-modal-footer");
   const thankyouConfirmBtn = document.getElementById("thankyou-confirm-btn");
 
-  const fieldValidators = {
-    'checkout-email': validateEmail,
-    'card-number': validateCardNumber,
-    'card-expiry': validateExpiry,
-    'card-cvc': validateCVC,
-    'card-name': validateTextInput
-  };
+  // const fieldValidators = {
+  //   'checkout-email': validateEmail,
+  //   'card-number': validateCardNumber,
+  //   'card-expiry': validateExpiry,
+  //   'card-cvc': validateCVC,
+  //   'card-name': validateTextInput
+  // };
 
   const savedCart = localStorage.getItem("cart");
   const cart = savedCart ? JSON.parse(savedCart) : [];
@@ -211,6 +211,96 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  $.validator.addMethod("textInput", function(value, element, maxLength) {
+    const trimmed = value.trim();
+    if (!trimmed) return false;
+    if (!/[a-zA-Z0-9]/.test(trimmed)) return false;
+    if (trimmed.length > maxLength) return false;
+    return true;
+  }, "Invalid input.");
+
+  $.validator.addMethod("customEmail", function(value, element) {
+    value = value.trim();
+    if (!value) return false;
+
+    const parts = value.split('@');
+    if (parts.length !== 2) return false;
+
+    const [local, domain] = parts;
+    if (!local || !domain) return false;
+
+    if (!/^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$/.test(local)) return false;
+    if (!/^[A-Za-z0-9.-]+\.[A-Za-z]{2,3}$/.test(domain)) return false;
+
+    const labels = domain.split('.');
+    for (const label of labels) {
+      if (label.length === 0) return false;
+      if (!/[A-Za-z0-9]/.test(label)) return false;
+      if (/^-|-$/.test(label)) return false;
+    }
+
+    return true;
+  }, "Invalid email address");
+
+
+  $.validator.addMethod("notEmpty", function (value, element) {
+    return value.trim().length > 0;
+  }, "This field cannot be empty.");
+
+  // Contact number
+  $.validator.addMethod("contactNumber", function(value, element) {
+    value = value.trim();
+    return this.optional(element) || /^\d{6,19}$/.test(value);
+  }, "Please enter a valid contact number (6-19 digits).");
+
+  $.validator.addMethod("strongPassword", function(value, element) {
+      // At least 8 characters
+      if (value.length < 8) return false;
+
+      // At least 1 lowercase letter
+      if (!/[a-z]/.test(value)) return false;
+
+      // At least 1 uppercase letter
+      if (!/[A-Z]/.test(value)) return false;
+
+      // At least 1 number
+      if (!/[0-9]/.test(value)) return false;
+
+      // At least 1 special character
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) return false;
+
+      return true;
+  }, "Password must be at least 8 characters, with uppercase, lowercase, number, and special character.");
+
+  $.validator.addMethod("passwordMatch", function(value, element, param) {
+    const passwordVal = $(param).val().trim(); 
+    return value.trim() === passwordVal && value.trim().length > 0;
+  }, "Passwords do not match.");
+
+  $.validator.addMethod("cardNumber", function(value, element) {
+    const digits = value.replace(/\s+/g, "");
+    return this.optional(element) || /^\d{16,19}$/.test(digits);
+  }, "Invalid card number (16-19 digits).");
+
+  $.validator.addMethod("cardExpiry", function(value, element) {
+    if (!/^\d{2}\/\d{2}$/.test(value)) return false;
+    const [mm, yy] = value.split("/").map(Number);
+    if (mm < 1 || mm > 12) return false;
+    const now = new Date();
+    const year = 2000 + yy;
+    const expiry = new Date(year, mm);
+    return expiry > now;
+  }, "Invalid expiry date.");
+
+  $.validator.addMethod("cardCVC", function(value, element) {
+    return this.optional(element) || /^\d{3,4}$/.test(value);
+  }, "Invalid CVC.");
+
+  $.validator.addMethod("paymentSelected", function(value, element) {
+    return $('input[name="payment-method"]:checked').length > 0;
+  }, "Please select a payment method.");
+
+
   renderCart();
   renderProductCategories();
   renderProductsSection();
@@ -220,7 +310,13 @@ document.addEventListener("DOMContentLoaded", () => {
   setupContactForm();
   setupCheckoutForm();
   setupCheckoutSummary();
+  setupPasswordToggles();
+
+  /*
   setupCheckoutActions();
+
+  */
+
 
   // resetModalForm('#loginModal');
   // resetModalForm('#signupModal');
@@ -587,6 +683,473 @@ document.addEventListener("DOMContentLoaded", () => {
   function setupLoginForm() {
     const $form = $('#login-form');
     const $email = $('#login-email');
+    const $invalid = $('#login-invalid-feedback');
+
+    restrictToEmail($email);
+
+    $form.validate({
+      onkeyup: function(element) { $(element).valid(); },  
+      onfocusout: function(element) { $(element).valid(); },
+      rules: {
+        'login-email': {
+          required: true,
+          customEmail: true
+        },
+        'login-password': {
+          required: true
+        }
+      },
+      messages: {
+        'login-email': {
+          required: "Please enter your email",
+        },
+        'login-password': {
+          required: "Please enter your password",
+        }
+      },
+      errorClass: "is-invalid",
+      validClass: "is-valid",
+      errorPlacement: function(error, element) {
+        const $feedback = $('#' + element.attr('id') + '-feedback');
+        if ($feedback.length) $feedback.text(error.text());
+      },
+      highlight: function(element) {
+        $(element).addClass('is-invalid').removeClass('is-valid');
+        //$invalid.show();
+      },
+      unhighlight: function(element) {
+        $(element).removeClass('is-invalid').addClass('is-valid');
+        const $feedback = $('#' + element.id + '-feedback');
+        if ($feedback.length) $feedback.text('');
+        //if ($form.valid()) $invalid.hide();
+      },
+      submitHandler: function(form) {
+        console.log('Login success:', {
+          email: $('#login-email').val(),
+          password: $('#login-password').val()
+        });
+        bootstrap.Modal.getInstance(document.getElementById('loginModal'))?.hide();
+      }
+    });
+  }
+
+  function setupSignupForm() {
+    const $form = $('#signup-form');
+    const $name = $('#signup-name');
+    const $email = $('#signup-email');
+    const $address = $('#signup-address');
+    const $contact = $('#signup-contact');
+    const $password = $('#signup-password');
+    const $confirm = $('#signup-confirm');
+
+    restrictToEmail($email);
+    restrictToDigits($contact);
+
+    $form.validate({
+      onkeyup: function(element) { $(element).valid(); },  
+      onfocusout: function(element) { $(element).valid(); },
+      rules: {
+        'signup-name': {
+          required: true,
+          textInput: 30
+        },
+        'signup-email': {
+          required: true,
+          customEmail: true
+        },
+        'signup-address': {
+          required: true,
+          textInput: 50
+        },
+        'signup-contact': {
+          required: true,
+          contactNumber: true
+        },
+        'signup-password': {
+          required: true,
+          strongPassword: true
+        },
+        'signup-confirm': {
+          required: true,
+          passwordMatch: '#signup-password'
+        }
+      },
+      messages: {
+        'signup-name': {
+          required: "Please enter your name",
+        },
+        'signup-email': {
+          required: "Please enter your email",
+        },
+        'signup-address': {
+          required: "Please enter your address",
+        },
+        'signup-contact': {
+          required: "Please enter your contact number",
+        },
+        'signup-password': {
+          required: "Please enter your password",
+        },
+        'signup-confirm': {
+          required: "Please reenter your password",
+        }
+      },
+      errorClass: "is-invalid",
+      validClass: "is-valid",
+      errorPlacement: function(error, element) {
+        const $feedback = $('#' + element.attr('id') + '-feedback');
+        if ($feedback.length) $feedback.text(error.text());
+      },
+      highlight: function(element) {
+        $(element).addClass('is-invalid').removeClass('is-valid');
+      },
+      unhighlight: function(element) {
+        $(element).removeClass('is-invalid').addClass('is-valid');
+        const $feedback = $('#' + element.id + '-feedback');
+        if ($feedback.length) $feedback.text('');
+      },
+      submitHandler: function(form) {
+        console.log('Signup success:', {
+          name: $name.val(),
+          email: $email.val(),
+          address: $address.val(),
+          contact: $contact.val(),
+          password: $password.val()
+        });
+        bootstrap.Modal.getInstance(document.getElementById('signupModal'))?.hide();
+      }
+    });
+  }
+
+  function setupCheckoutForm() {
+    const $form = $('#checkout-form');
+    const $confirm = $('#confirm-purchase-btn');
+    const $thankyou = $('#checkout-thankyou');
+    const $modalFooter = $('#checkout-modal-footer');
+
+    $form.validate({
+      onkeyup: function(element) { $(element).valid(); },
+      onfocusout: function(element) { $(element).valid(); },
+      rules: {
+        'checkout-email': {
+          required: true,
+          customEmail: true
+        },
+        'payment-method': {
+          paymentSelected: true
+        },
+        'card-number': {
+          required: function() { return $('input[name="payment-method"]:checked').val() === 'card'; },
+          cardNumber: true
+        },
+        'card-expiry': {
+          required: function() { return $('input[name="payment-method"]:checked').val() === 'card'; },
+          cardExpiry: true
+        },
+        'card-cvc': {
+          required: function() { return $('input[name="payment-method"]:checked').val() === 'card'; },
+          cardCVC: true
+        },
+        'card-name': {
+          required: function() { return $('input[name="payment-method"]:checked').val() === 'card'; },
+          textInput: 50
+        }
+      },
+      messages: {
+        'checkout-email': {
+          required: "Please enter your email",
+        },
+        'payment-method': {
+          required: "Please select a payment method.",
+        },
+        'card-number': {
+          required: "Please enter the Card's Number",
+        },
+        'card-expiry': {
+          required: "Please enter the Card's Expiry",
+        },
+        'card-cvc': {
+          required: "Please enter the Card's CVC",
+        },
+        'card-name': {
+          required: "Please enter the Cardholder's Name",
+        }
+      },
+      errorClass: "is-invalid",
+      validClass: "is-valid",  
+      errorPlacement: function(error, element) {
+        const $feedback = $('#' + element.attr('id') + '-feedback');
+        if ($feedback.length) $feedback.text(error.text());
+      
+        if (element.attr('name') === 'payment-method') {
+          $('#payment-method-feedback').show().text(error.text());
+        }
+      },
+      highlight: function(element) {
+      $(element).removeClass('is-valid');
+        if ($(element).attr('name') !== 'payment-method') {
+            $(element).addClass('is-invalid');
+        }
+        if ($(element).attr('name') === 'payment-method') $('#payment-method-feedback').show();
+      },
+      unhighlight: function(element) {
+        $(element).removeClass('is-invalid');
+        if ($(element).attr('name') !== 'payment-method') {
+            $(element).addClass('is-valid');
+        }
+        const $feedback = $('#' + element.id + '-feedback');
+        if ($feedback.length) $feedback.text('');
+        if ($(element).attr('name') === 'payment-method') $('#payment-method-feedback').hide();
+      },
+      submitHandler: function(form) {
+        console.log('✅ Checkout successful');
+        $form.hide();
+        if ($modalFooter.length) $modalFooter.hide();
+        if ($thankyou.length) $thankyou.show();
+        cart.length = 0;
+        renderCart();
+        updateCheckoutButton();
+        $confirm.prop('disabled', true);
+        //bootstrap.Modal.getInstance(document.getElementById('checkoutModal'))?.hide();
+        }
+    });
+
+    // Toggle card fields visibility
+    $('input[name="payment-method"]').on('change', () => {
+      const checked = $('input[name="payment-method"]:checked').val();
+      const $cardDetails = $('#card-details');
+      if (checked === 'card') {
+        $cardDetails.slideDown();
+      } else {
+        $cardDetails.slideUp();
+        $('#card-number, #card-expiry, #card-cvc, #card-name').removeClass('is-invalid is-valid');
+        $form.validate().resetForm(); // reset card validation
+      }
+    });
+
+    // Enable/disable confirm button dynamically
+    $form.find('input, select').add('input[name="payment-method"]').on('input change', () => {
+      $confirm.prop('disabled', !$form.valid());
+    });
+
+    $('#thankyou-confirm-btn').on('click', () => {
+      setTimeout(() => {
+        if ($thankyou.length) $thankyou.hide();
+        if ($modalFooter.length) $modalFooter.show();
+        $form.show();
+      }, 300);
+    });
+  }
+
+  function setupContactForm() {
+    const $form = $('#contact-form');
+    const $name = $('#contact-name');
+    const $email = $('#contact-email');
+    const $message = $('#contact-message');
+    const $success = $('#contact-success');
+
+    if (!$form.length) return;
+
+    restrictToEmail($email);
+
+    $form.validate({
+      onkeyup: function(element) { $(element).valid(); },
+      onfocusout: function(element) { $(element).valid(); },
+      rules: {
+        'contact-name': {
+          required: true,
+          textInput: 30
+        },
+        'contact-email': {
+          required: true,
+          customEmail: true
+        },
+        'contact-message': {
+          required: true,
+          textInput: 1000
+        }
+      },
+      messages: {
+        'contact-name': {
+          required: "Please enter your name",
+        },
+        'contact-email': {
+          required: "Please enter your email",
+        },
+        'contact-message': {
+          required: "Please enter a message",
+        }
+      },
+      errorClass: "is-invalid",
+      validClass: "is-valid",
+      errorPlacement: function(error, element) {
+        const $feedback = $('#' + element.attr('id') + '-feedback');
+        if ($feedback.length) $feedback.text(error.text());
+      },
+      highlight: function(element) {
+        $(element).addClass('is-invalid').removeClass('is-valid');
+      },
+      unhighlight: function(element) {
+        $(element).removeClass('is-invalid').addClass('is-valid');
+        const $feedback = $('#' + element.id + '-feedback');
+        if ($feedback.length) $feedback.text('');
+      },
+      submitHandler: function(form) {
+        showAlert("Your message has been sent!", "success");
+        $success.removeClass('d-none');
+
+        form.reset();
+        $name.removeClass('is-invalid');
+        $email.removeClass('is-invalid');
+        $message.removeClass('is-invalid');
+
+        setTimeout(() => {
+          $success.addClass('d-none');
+        }, 3000);
+      }
+    });
+  }
+
+  function setupPasswordToggles() {
+    $('.toggle-password').on('click', function () {
+      const target = $($(this).data('target'));
+      const icon = $(this).find('i');
+      const isPassword = target.attr('type') === 'password';
+
+      target.attr('type', isPassword ? 'text' : 'password');
+      icon.toggleClass('bi-eye bi-eye-slash');
+    });
+  }
+
+  function setupCheckoutSummary() {
+    if (checkoutBtn && checkoutSummary) {
+      checkoutBtn.addEventListener("click", () => {
+        if (cart.length === 0) {
+          checkoutSummary.innerHTML = "<p>Your cart is empty.</p>";
+          return;
+        }
+
+        let html = `<table class="table table-dark table-striped align-middle">
+          <thead>
+            <tr>
+              <th>Game</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>`;
+        let total = 0;
+
+        cart.forEach(item => {
+          const subtotal = item.price * item.qty;
+          total += subtotal;
+          html += `
+            <tr>
+              <td>${item.name}</td>
+              <td>₱${item.price}</td>
+              <td>${item.qty}</td>
+              <td>₱${subtotal}</td>
+            </tr>`;
+        });
+
+        html += `</tbody></table>
+          <div class="text-end"><strong>Total: ₱${total}</strong></div>`;
+        checkoutSummary.innerHTML = html;
+
+        // reset UI state if already purchased earlier
+        if (checkoutThankyou) checkoutThankyou.style.display = "none";
+        if (checkoutForm) checkoutForm.style.display = "";
+        if (checkoutModalFooter) checkoutModalFooter.style.display = "";
+      });
+    }
+  }
+
+  //clears modal inputs
+  function resetModalForm(modalSelector) {
+    const $modal = $(modalSelector);
+
+    // When modal is fully hidden
+    $modal.on('hidden.bs.modal', function () {
+      const $form = $modal.find('form');
+      $form.trigger('reset'); // clear all values
+
+      // remove invalid classes
+      $form.find('.is-invalid').removeClass('is-invalid');
+
+      // hide any shared error feedbacks like login
+      $form.find('.invalid-feedback').hide();
+    });
+  }
+
+  function restrictToDigits($el) {
+    $el.on('keypress', e => {
+      if (!/[0-9]/.test(String.fromCharCode(e.which))) e.preventDefault();
+    });
+  }
+
+  function restrictToEmail($el) {
+    $el.on('keypress', e => {
+      const char = String.fromCharCode(e.which);
+      const val = $el.val();
+      if (!/[a-zA-Z0-9._@-]/.test(char) || (char === '@' && val.includes('@'))) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  function showAlert(message, type = "danger", duration = 3000) {
+    const container = document.getElementById("global-alert-container");
+    if (!container) return;
+
+    // Cap to max 3 alerts, remove oldest if needed
+    const alerts = container.querySelectorAll(".alert");
+    if (alerts.length >= 3) {
+      const oldest = alerts[0];
+      const bsOldest = bootstrap.Alert.getOrCreateInstance(oldest);
+      oldest.classList.add("alert-exit-active");
+      setTimeout(() => bsOldest.close(), 300);
+    }
+
+    // Create alert element
+    const alertDiv = document.createElement("div");
+    alertDiv.className = `alert alert-${type} alert-dismissible text-center shadow fade show alert-enter`;
+    alertDiv.setAttribute("role", "alert");
+    alertDiv.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+    container.appendChild(alertDiv);
+
+    // Animate in
+    requestAnimationFrame(() => {
+      alertDiv.classList.remove("alert-enter");
+      alertDiv.classList.add("alert-enter-active");
+    });
+
+    // Auto-dismiss after duration (if > 0)
+    if (duration > 0) {
+      setTimeout(() => {
+        alertDiv.classList.remove("alert-enter-active");
+        alertDiv.classList.add("alert-exit-active");
+        const bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
+        setTimeout(() => bsAlert.close(), 300);
+      }, duration);
+    }
+
+    // Animate out when closed manually
+    alertDiv.addEventListener('close.bs.alert', () => {
+      alertDiv.classList.remove("alert-enter-active");
+      alertDiv.classList.add("alert-exit-active");
+    });
+  }
+
+  /* hide legacy validations, will reuse if may mali sa jquery validations
+
+  function setupLoginForm() {
+    const $form = $('#login-form');
+    const $email = $('#login-email');
     const $password = $('#login-password');
     const $invalid = $('#login-invalid-feedback');
 
@@ -756,9 +1319,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  //if functions keep growing baka setup nlng ng new function setupCheckoutModal that keeps
-  //all checkout related funcs (easier call to ready func)
-
   function setupCheckoutForm() {
     const $fields = $('#checkout-form input, #checkout-form select');
     const $confirm = $('#confirm-purchase-btn');
@@ -795,49 +1355,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function setupCheckoutSummary() {
-    if (checkoutBtn && checkoutSummary) {
-      checkoutBtn.addEventListener("click", () => {
-        if (cart.length === 0) {
-          checkoutSummary.innerHTML = "<p>Your cart is empty.</p>";
-          return;
-        }
+  */
 
-        let html = `<table class="table table-dark table-striped align-middle">
-          <thead>
-            <tr>
-              <th>Game</th>
-              <th>Price</th>
-              <th>Qty</th>
-              <th>Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>`;
-        let total = 0;
+  //if functions keep growing baka setup nlng ng new function setupCheckoutModal that keeps
+  //all checkout related funcs (easier call to ready func)
 
-        cart.forEach(item => {
-          const subtotal = item.price * item.qty;
-          total += subtotal;
-          html += `
-            <tr>
-              <td>${item.name}</td>
-              <td>₱${item.price}</td>
-              <td>${item.qty}</td>
-              <td>₱${subtotal}</td>
-            </tr>`;
-        });
-
-        html += `</tbody></table>
-          <div class="text-end"><strong>Total: ₱${total}</strong></div>`;
-        checkoutSummary.innerHTML = html;
-
-        // reset UI state if already purchased earlier
-        if (checkoutThankyou) checkoutThankyou.style.display = "none";
-        if (checkoutForm) checkoutForm.style.display = "";
-        if (checkoutModalFooter) checkoutModalFooter.style.display = "";
-      });
-    }
-  }
+  /*
 
   function setupCheckoutActions() {
     if (confirmPurchaseBtn) {
@@ -870,43 +1393,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  //clears modal inputs
-  function resetModalForm(modalSelector) {
-    const $modal = $(modalSelector);
-
-    // When modal is fully hidden
-    $modal.on('hidden.bs.modal', function () {
-      const $form = $modal.find('form');
-      $form.trigger('reset'); // clear all values
-
-      // remove invalid classes
-      $form.find('.is-invalid').removeClass('is-invalid');
-
-      // hide any shared error feedbacks like login
-      $form.find('.invalid-feedback').hide();
-    });
-  }
-
-  /*
   dont change validation funcs :D nakalimutan ko jquery validation but works mostly the same
   will refactor nalang later
-  */
-
-  function restrictToDigits($el) {
-    $el.on('keypress', e => {
-      if (!/[0-9]/.test(String.fromCharCode(e.which))) e.preventDefault();
-    });
-  }
-
-  function restrictToEmail($el) {
-    $el.on('keypress', e => {
-      const char = String.fromCharCode(e.which);
-      const val = $el.val();
-      if (!/[a-zA-Z0-9._@-]/.test(char) || (char === '@' && val.includes('@'))) {
-        e.preventDefault();
-      }
-    });
-  }
 
   function validateField($field, validator, ...args) {
     const value = $.trim($field.val());
@@ -921,10 +1409,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!/[a-zA-Z0-9]/.test(trimmed)) return false;
     if (trimmed.length > maxLength) return false;
     return true;
-  }
-
-  function validateNotEmpty(value) {
-    return value.trim().length > 0;
   }
 
   function validateEmail(email) {
@@ -950,6 +1434,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     return true;
+  }
+
+  function validateNotEmpty(value) {
+    return value.trim().length > 0;
   }
 
   function validateContact(contact) {
@@ -1025,51 +1513,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return valid;
   }
 
-  function showAlert(message, type = "danger", duration = 3000) {
-    const container = document.getElementById("global-alert-container");
-    if (!container) return;
-
-    // Cap to max 3 alerts, remove oldest if needed
-    const alerts = container.querySelectorAll(".alert");
-    if (alerts.length >= 3) {
-      const oldest = alerts[0];
-      const bsOldest = bootstrap.Alert.getOrCreateInstance(oldest);
-      oldest.classList.add("alert-exit-active");
-      setTimeout(() => bsOldest.close(), 300);
-    }
-
-    // Create alert element
-    const alertDiv = document.createElement("div");
-    alertDiv.className = `alert alert-${type} alert-dismissible text-center shadow fade show alert-enter`;
-    alertDiv.setAttribute("role", "alert");
-    alertDiv.innerHTML = `
-      ${message}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    `;
-
-    container.appendChild(alertDiv);
-
-    // Animate in
-    requestAnimationFrame(() => {
-      alertDiv.classList.remove("alert-enter");
-      alertDiv.classList.add("alert-enter-active");
-    });
-
-    // Auto-dismiss after duration (if > 0)
-    if (duration > 0) {
-      setTimeout(() => {
-        alertDiv.classList.remove("alert-enter-active");
-        alertDiv.classList.add("alert-exit-active");
-        const bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
-        setTimeout(() => bsAlert.close(), 300);
-      }, duration);
-    }
-
-    // Animate out when closed manually
-    alertDiv.addEventListener('close.bs.alert', () => {
-      alertDiv.classList.remove("alert-enter-active");
-      alertDiv.classList.add("alert-exit-active");
-    });
-  }
+  */
 
 });

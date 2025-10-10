@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JazStation</title>
   <link href="/dist/styles.css" rel="stylesheet">
+  <link rel="stylesheet" href="/lib/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -96,14 +97,21 @@
           <form id="login-form" novalidate>
             <div class="mb-3">
               <label for="login-email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="login-email" placeholder="you@email.com" required>
+              <input type="email" class="form-control" id="login-email" name="login-email" placeholder="you@email.com" required>
+              <div class="invalid-feedback" id="login-email-feedback"></div>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
               <label for="login-password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="login-password" placeholder="••••••••" required>
-                <div id="login-invalid-feedback" class="invalid-feedback" style="display: none;">
-                  Invalid email or password.
-                </div>
+              <div class="input-group">
+                <input type="password" class="form-control" id="login-password" name="login-password" placeholder="••••••••" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#login-password">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <div class="invalid-feedback" id="login-password-feedback"></div>
+              </div>
+            </div>
+            <div id="login-invalid-feedback" class="invalid-feedback" style="display: none;">
+              Invalid email or password.
             </div>
             <div class="d-grid">
               <button type="submit" class="btn btn-primary">Login</button>
@@ -138,33 +146,43 @@
           <form id="signup-form" novalidate>
             <div class="mb-3">
               <label for="signup-name" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="signup-name" maxlength="30" placeholder="JDent Pascual" required>
-              <div class="invalid-feedback">Please enter your name.</div>
+              <input type="text" class="form-control" id="signup-name" name="signup-name" maxlength="30" placeholder="JDent Pascual" required>
+              <div class="invalid-feedback" id="signup-name-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="signup-email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="signup-email" placeholder="jdent@gmail.com" required>
-              <div class="invalid-feedback">Please enter a valid email.</div>
+              <input type="email" class="form-control" id="signup-email" name="signup-email" placeholder="jdent@gmail.com" required>
+              <div class="invalid-feedback" id="signup-email-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="signup-address" class="form-label">Address</label>
-              <input type="text" class="form-control" id="signup-address" maxlength="50" placeholder="Brgy. Malaki, Dent City" required>
-              <div class="invalid-feedback">Please enter your address.</div>
+              <input type="text" class="form-control" id="signup-address" name="signup-address" maxlength="50" placeholder="Brgy. Malaki, Dent City" required>
+              <div class="invalid-feedback" id="signup-address-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="signup-contact" class="form-label">Contact Number</label>
-              <input type="tel" class="form-control" id="signup-contact" pattern="\\d+" maxlength="19" placeholder="09123456789" required>
-              <div class="invalid-feedback">Please enter a valid contact number (6–19 digits).</div>
+              <input type="tel" class="form-control" id="signup-contact" name="signup-contact" pattern="\\d+" maxlength="19" placeholder="09123456789" required>
+              <div class="invalid-feedback" id="signup-contact-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="signup-password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="signup-password" placeholder="••••••••" required>
-              <div class="invalid-feedback">Please enter your password.</div>
+              <div class="input-group">
+                <input type="password" class="form-control" id="signup-password" name="signup-password" placeholder="••••••••" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#signup-password">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <div class="invalid-feedback" id="signup-password-feedback"></div>
+              </div>
             </div>
             <div class="mb-3">
               <label for="signup-confirm" class="form-label">Retype Password</label>
-              <input type="password" class="form-control" id="signup-confirm" placeholder="••••••••" required>
-              <div class="invalid-feedback">Passwords do not match.</div>
+              <div class="input-group">
+                <input type="password" class="form-control" id="signup-confirm" name="signup-confirm" placeholder="••••••••" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#signup-confirm">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <div class="invalid-feedback" id="signup-confirm-feedback"></div>
+              </div>
             </div>
             <div class="d-grid">
               <button type="submit" class="btn btn-success">Create Account</button>

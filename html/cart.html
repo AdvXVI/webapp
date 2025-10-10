@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JazStation</title>
   <link href="/dist/styles.css" rel="stylesheet">
+  <link rel="stylesheet" href="/lib/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -66,8 +67,8 @@
           <form id="checkout-form" class="mt-4">
             <div class="mb-3">
               <label for="checkout-email" class="form-label">Email address</label>
-              <input type="email" class="form-control" id="checkout-email" required autocomplete="email" placeholder="you@email.com">
-              <div class="invalid-feedback">Please enter a valid email.</div>
+              <input type="email" class="form-control" id="checkout-email" name="checkout-email" required autocomplete="email" placeholder="you@email.com">
+              <div class="invalid-feedback" id="checkout-email-feedback"></div>
             </div>
             <div class="mb-3">
               <label class="form-label">Payment Method</label>
@@ -85,30 +86,30 @@
                   <label class="form-check-label" for="pay-gcash">GCash</label>
                 </div>
               </div>
-              <div class="invalid-feedback" id="payment-method-feedback" style="display:block">Please select a payment method.</div>
+              <div class="invalid-feedback" id="payment-method-feedback" style="display:block"></div>
             </div>
             <div id="card-details" style="display:none;">
               <div class="mb-3">
                 <label for="card-number" class="form-label">Card Number</label>
-                <input type="text" class="form-control" id="card-number" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" pattern="[\d ]{16,19}">
-                <div class="invalid-feedback">Enter a valid card number.</div>
+                <input type="text" class="form-control" id="card-number" name="card-number" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" pattern="[\d ]{16,19}">
+                <div class="invalid-feedback" id="card-number-feedback"></div>
               </div>
               <div class="mb-3 row">
                 <div class="col">
                   <label for="card-expiry" class="form-label">Expiry (MM/YY)</label>
-                  <input type="text" class="form-control" id="card-expiry" maxlength="5" placeholder="MM/YY" pattern="\d{2}/\d{2}">
-                  <div class="invalid-feedback">Enter a valid expiry date.</div>
+                  <input type="text" class="form-control" id="card-expiry" name="card-expiry" maxlength="5" placeholder="MM/YY" pattern="\d{2}/\d{2}">
+                  <div class="invalid-feedback" id="card-expiry-feedback"></div>
                 </div>
                 <div class="col">
                   <label for="card-cvc" class="form-label">CVC</label>
-                  <input type="text" class="form-control" id="card-cvc" maxlength="4" placeholder="123" pattern="\d{3,4}">
-                  <div class="invalid-feedback">Enter a valid CVC.</div>
+                  <input type="text" class="form-control" id="card-cvc" name="card-cvc" maxlength="4" placeholder="123" pattern="\d{3,4}">
+                  <div class="invalid-feedback" id="card-cvc-feedback"></div>
                 </div>
               </div>
               <div class="mb-3">
                 <label for="card-name" class="form-label">Name on Card</label>
-                <input type="text" class="form-control" id="card-name" maxlength="40" placeholder="Cardholder Name">
-                <div class="invalid-feedback">Enter the cardholder's name.</div>
+                <input type="text" class="form-control" id="card-name" name="card-name" maxlength="40" placeholder="Cardholder Name">
+                <div class="invalid-feedback" id="card-name-feedback"></div>
               </div>
             </div>
           </form>
@@ -119,7 +120,7 @@
         </div>
         <div class="modal-footer" id="checkout-modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button id="confirm-purchase-btn" type="button" class="btn btn-success" disabled>Confirm Purchase</button>
+          <button id="confirm-purchase-btn" type="submit" form="checkout-form" class="btn btn-success" disabled>Confirm Purchase</button>
         </div>
       </div>
     </div>
@@ -137,14 +138,21 @@
           <form id="login-form" novalidate>
             <div class="mb-3">
               <label for="login-email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="login-email" placeholder="you@email.com" required>
+              <input type="email" class="form-control" id="login-email" name="login-email" placeholder="you@email.com" required>
+              <div class="invalid-feedback" id="login-email-feedback"></div>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
               <label for="login-password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="login-password" placeholder="••••••••" required>
-                <div id="login-invalid-feedback" class="invalid-feedback" style="display: none;">
-                  Invalid email or password.
-                </div>
+              <div class="input-group">
+                <input type="password" class="form-control" id="login-password" name="login-password" placeholder="••••••••" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#login-password">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <div class="invalid-feedback" id="login-password-feedback"></div>
+              </div>
+            </div>
+            <div id="login-invalid-feedback" class="invalid-feedback" style="display: none;">
+              Invalid email or password.
             </div>
             <div class="d-grid">
               <button type="submit" class="btn btn-primary">Login</button>
@@ -179,33 +187,43 @@
           <form id="signup-form" novalidate>
             <div class="mb-3">
               <label for="signup-name" class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="signup-name" maxlength="30" placeholder="JDent Pascual" required>
-              <div class="invalid-feedback">Please enter your name.</div>
+              <input type="text" class="form-control" id="signup-name" name="signup-name" maxlength="30" placeholder="JDent Pascual" required>
+              <div class="invalid-feedback" id="signup-name-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="signup-email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="signup-email" placeholder="jdent@gmail.com" required>
-              <div class="invalid-feedback">Please enter a valid email.</div>
+              <input type="email" class="form-control" id="signup-email" name="signup-email" placeholder="jdent@gmail.com" required>
+              <div class="invalid-feedback" id="signup-email-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="signup-address" class="form-label">Address</label>
-              <input type="text" class="form-control" id="signup-address" maxlength="50" placeholder="Brgy. Malaki, Dent City" required>
-              <div class="invalid-feedback">Please enter your address.</div>
+              <input type="text" class="form-control" id="signup-address" name="signup-address" maxlength="50" placeholder="Brgy. Malaki, Dent City" required>
+              <div class="invalid-feedback" id="signup-address-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="signup-contact" class="form-label">Contact Number</label>
-              <input type="tel" class="form-control" id="signup-contact" pattern="\\d+" maxlength="19" placeholder="09123456789" required>
-              <div class="invalid-feedback">Please enter a valid contact number (6–19 digits).</div>
+              <input type="tel" class="form-control" id="signup-contact" name="signup-contact" pattern="\\d+" maxlength="19" placeholder="09123456789" required>
+              <div class="invalid-feedback" id="signup-contact-feedback"></div>
             </div>
             <div class="mb-3">
               <label for="signup-password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="signup-password" placeholder="••••••••" required>
-              <div class="invalid-feedback">Please enter your password.</div>
+              <div class="input-group">
+                <input type="password" class="form-control" id="signup-password" name="signup-password" placeholder="••••••••" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#signup-password">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <div class="invalid-feedback" id="signup-password-feedback"></div>
+              </div>
             </div>
             <div class="mb-3">
               <label for="signup-confirm" class="form-label">Retype Password</label>
-              <input type="password" class="form-control" id="signup-confirm" placeholder="••••••••" required>
-              <div class="invalid-feedback">Passwords do not match.</div>
+              <div class="input-group">
+                <input type="password" class="form-control" id="signup-confirm" name="signup-confirm" placeholder="••••••••" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#signup-confirm">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <div class="invalid-feedback" id="signup-confirm-feedback"></div>
+              </div>
             </div>
             <div class="d-grid">
               <button type="submit" class="btn btn-success">Create Account</button>
