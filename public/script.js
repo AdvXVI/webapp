@@ -123,19 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "/assets/peak5.png"
       ]
     },
-    "call-of-jd": {
-      name: "Call of JD",
-      price: 325,
-      genre: "Action",
-      description: "Fast-paced action and thrilling missions await in Call of JD.",
-      images: [
-        "/assets/jd.jpg",
-        "/assets/jd1.jpg",
-        "/assets/jd2.jpg",
-        "/assets/jd3.jpg",
-        "/assets/jd4.jpg"
-      ]
-    },
     "summertime-saga": {
       name: "Summertime Saga",
       price: 550,
