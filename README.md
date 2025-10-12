@@ -3,3 +3,11 @@ Web Development Pair
 - Bonagua, Jazper Angelo M.
 
 NodeJS + Express - Digital Game Distribution Website
+
+How to run:
+
+npm install
+
+npm run build:css
+
+node server.js
