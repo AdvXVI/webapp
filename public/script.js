@@ -123,18 +123,18 @@ document.addEventListener("DOMContentLoaded", () => {
         "/assets/peak5.png"
       ]
     },
-    "summertime-saga": {
-      name: "Summertime Saga",
-      price: 550,
-      genre: "Visual Novel",
-      description: "A coming-of-age dating sim with a twist.",
-      images: [
-        "/assets/sts.png",
-        "/assets/sts1.jpg",
-        "/assets/sts2.jpg",
-        "/assets/sts3.webp"
-      ]
-    },
+    // "summertime-saga": {
+    //   name: "Summertime Saga",
+    //   price: 550,
+    //   genre: "Visual Novel",
+    //   description: "A coming-of-age dating sim with a twist.",
+    //   images: [
+    //     "/assets/sts.png",
+    //     "/assets/sts1.jpg",
+    //     "/assets/sts2.jpg",
+    //     "/assets/sts3.webp"
+    //   ]
+    // },
     "god-of-war": {
       name: "God of War",
       price: 565,
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name: "Conter Strik",
       price: 150,
       genre: "FPS",
-      description: "Hello am 48 year man from somalia. Sorry for my bed england. I selled my wife for internet connection for play \"conter strik\" and i want to become the goodest player like you I play with 400 ping on brazil and i am global elite 2. pls no copy pasterio my story",
+      description: "Engage in an incredibly realistic brand of terrorist warfare in this wildly popular team-based game.",
       images: [
         "/assets/cs.jpg",
         "/assets/cs1.jpg",
@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name: "Doki Doki Literature Club",
       price: 200,
       genre: "Visual Novel",
-      description: "You kind of left her hanging this morning, you know?",
+      description: "Welcome to the club! Write poems for your crush and experience the terror of school romance in this critically-acclaimed psychological horror story.",
       images: [
         "/assets/ddlc.png",
         "/assets/ddlc1.jpg",
