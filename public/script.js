@@ -944,6 +944,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!$form.length) return;
 
     restrictToEmail($email);
+    restrictToText($name);
 
     $form.validate({
       onkeyup: function(element) { $(element).valid(); },
